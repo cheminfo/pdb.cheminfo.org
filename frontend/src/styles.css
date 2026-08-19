@@ -2,16 +2,8 @@
 @import 'react-cheminfo/styles/chrome.css';
 
 :root {
-  /* The two colours this site owns: the residues of a binding site, and the
-     ligand they hold. */
-  --brand: #2563eb;
-  --brand-alt: #fbbf24;
-
-  /* The mark's amber reaches 1.7:1 on white — nowhere near what text needs, so
-     set text in a darkened one (4.8:1) of the same hue. */
-  --brand-alt-text: #b45309;
-
-  --accent: var(--brand);
+  /* The two colours this site owns — the residues of a binding site and the
+     ligand they hold — come from <SiteTheme siteId="pdb" />. */
   --accent-soft: #dbeafe;
   --intent-success: #238551;
 

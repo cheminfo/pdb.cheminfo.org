@@ -4,6 +4,7 @@ import {
   EcosystemButton,
   SiteFooter,
   SiteHeader,
+  SiteTheme,
 } from 'react-cheminfo/ui';
 import { NavLink, useNavigate } from 'react-router';
 
@@ -37,6 +38,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="app-shell">
+      <SiteTheme siteId="pdb" />
       <SiteHeader
         siteId="pdb"
         nav={PAGES.map((page) => ({ id: page.to, label: page.label }))}
