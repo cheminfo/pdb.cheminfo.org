@@ -22,7 +22,6 @@ const PAGES = [
   { to: '/stats', label: 'Stats' },
   { to: '/api', label: 'API' },
   { to: '/settings', label: 'Settings' },
-  { to: '/about', label: 'About' },
 ] as const;
 
 /**
@@ -55,6 +54,14 @@ export default function Layout({ children }: LayoutProps) {
         )}
         actions={
           <>
+            <NavLink
+              to="/about"
+              className={({ isActive }) =>
+                isActive ? 'nav-link nav-link--active' : 'nav-link'
+              }
+            >
+              About
+            </NavLink>
             <CiteButton reference={PAPER} />
             <EcosystemButton currentSiteId="pdb" />
           </>

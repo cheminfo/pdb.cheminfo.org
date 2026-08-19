@@ -3,7 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router';
 
-import AboutPage from './pages/about/AboutPage.tsx';
+import AboutRoute from './pages/about/AboutRoute.tsx';
 import ApiPage from './pages/api/ApiPage.tsx';
 import BrowsePage from './pages/browse/BrowsePage.tsx';
 import HomePage from './pages/home/HomePage.tsx';
@@ -36,7 +36,7 @@ createRoot(container).render(
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/api" element={<ApiPage />} />
             <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/about" element={<AboutPage />} />
+            <Route path="/about" element={<AboutRoute />} />
           </Routes>
         </Layout>
       </BrowserRouter>
