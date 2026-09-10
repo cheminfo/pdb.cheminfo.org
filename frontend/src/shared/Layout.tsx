@@ -41,6 +41,7 @@ export default function Layout({ children }: LayoutProps) {
       <SiteTheme siteId="pdb" />
       <SiteHeader
         siteId="pdb"
+        width="full"
         nav={PAGES.map((page) => ({ id: page.to, label: page.label }))}
         onHome={() => void navigate('/')}
         renderNavItem={(item) => (
@@ -71,7 +72,7 @@ export default function Layout({ children }: LayoutProps) {
       />
       <SeedingBanner />
       <main className="app-main">{children}</main>
-      <SiteFooter siteId="pdb" />
+      <SiteFooter siteId="pdb" width="full" />
     </div>
   );
 }
