@@ -1,5 +1,6 @@
 import { Button, ButtonGroup } from '@blueprintjs/core';
 import { useState } from 'react';
+import { CopyButton } from 'react-cheminfo/ui';
 
 import EndpointPreview from './EndpointPreview.tsx';
 import { endpoints } from './endpoints.tsx';
@@ -10,26 +11,11 @@ import { endpoints } from './endpoints.tsx';
  */
 export default function EndpointList() {
   const [openExample, setOpenExample] = useState<string | null>(null);
-  const [copiedExample, setCopiedExample] = useState<string | null>(null);
-
-  async function handleCopy(example: string) {
-    try {
-      await navigator.clipboard.writeText(toAbsoluteUrl(example));
-      setCopiedExample(example);
-      setTimeout(() => {
-        setCopiedExample((current) => (current === example ? null : current));
-      }, 1500);
-    } catch {
-      // Clipboard API can be blocked (insecure context, permission denied);
-      // fail silently rather than surfacing a noisy error.
-    }
-  }
 
   return (
     <div>
       {endpoints.map((endpoint) => {
         const isOpen = openExample === endpoint.example;
-        const isCopied = copiedExample === endpoint.example;
         return (
           <div key={endpoint.path} className="endpoint">
             <code className="path">
@@ -56,15 +42,12 @@ export default function EndpointList() {
                 {endpoint.example}
               </a>
               <ButtonGroup className="endpoint-actions">
-                <Button
-                  size="small"
-                  icon={isCopied ? 'tick' : 'duplicate'}
-                  onClick={() => {
-                    void handleCopy(endpoint.example);
-                  }}
-                >
-                  {isCopied ? 'Copied!' : 'Copy'}
-                </Button>
+                <CopyButton
+                  small
+                  content={() => toAbsoluteUrl(endpoint.example)}
+                  label="Copy"
+                  copiedLabel="Copied!"
+                />
                 <Button
                   size="small"
                   icon={isOpen ? 'chevron-up' : 'play'}

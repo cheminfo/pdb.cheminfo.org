@@ -92,7 +92,7 @@ export default function HomePage() {
           PyMol so structure thumbnails load instantly. Search by title, residue
           composition, molecular weight or isoelectric point, run ligand
           substructure queries, inspect any entry in the in-browser Mol* 3D
-          viewer, and compose multi-structure scenes with a JSmol-inspired
+          viewer, and compose multi-structure scenes with a JSmol-style
           scripting language.
         </p>
       </header>

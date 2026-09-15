@@ -1,5 +1,6 @@
 import { Card } from '@blueprintjs/core';
 import { useMemo, useState } from 'react';
+import { formatDecimal, formatInteger } from 'react-cheminfo/core';
 
 import DualRangeSlider from '../../shared/DualRangeSlider.tsx';
 import {
@@ -14,7 +15,6 @@ import type {
   PairFrequencyResponse,
 } from '../../shared/api/types.ts';
 import Panel from '../../shared/charts/Panel.tsx';
-import { formatNumber } from '../../shared/format.ts';
 import { useAsync } from '../../shared/useAsync.ts';
 
 import CisHeatmap from './CisHeatmap.tsx';
@@ -134,24 +134,24 @@ function SummaryCards({ state }: SummaryCardsProps) {
     <div className="stats-grid">
       <Card className="stat-card" compact>
         <span className="label">Peptide bonds</span>
-        <span className="value">{formatNumber(nbBonds)}</span>
+        <span className="value">{formatInteger(nbBonds)}</span>
         <span className="sub">across the whole PDB</span>
       </Card>
       <Card className="stat-card" compact>
         <span className="label">Trans</span>
-        <span className="value">{formatNumber(nbTrans)}</span>
+        <span className="value">{formatInteger(nbTrans)}</span>
         <span className="sub">|ω| ≥ 150°</span>
       </Card>
       <Card className="stat-card" compact>
         <span className="label">Cis</span>
-        <span className="value">{formatNumber(nbCis)}</span>
-        <span className="sub">{formatNumber(cisPercent, 3)} % of bonds</span>
+        <span className="value">{formatInteger(nbCis)}</span>
+        <span className="sub">{formatDecimal(cisPercent, 3)} % of bonds</span>
       </Card>
       <Card className="stat-card" compact>
         <span className="label">Twisted</span>
-        <span className="value">{formatNumber(nbTwisted)}</span>
+        <span className="value">{formatInteger(nbTwisted)}</span>
         <span className="sub">
-          {formatNumber(twistedPercent, 3)} % (30° &lt; |ω| &lt; 150°)
+          {formatDecimal(twistedPercent, 3)} % (30° &lt; |ω| &lt; 150°)
         </span>
       </Card>
     </div>

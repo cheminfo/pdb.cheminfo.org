@@ -1,6 +1,7 @@
+import { formatInteger } from 'react-cheminfo/core';
+
 import { fetchResiduesPerChainStats } from '../../shared/api/client.ts';
 import Panel from '../../shared/charts/Panel.tsx';
-import { formatInteger } from '../../shared/format.ts';
 import { useAsync } from '../../shared/useAsync.ts';
 
 /**

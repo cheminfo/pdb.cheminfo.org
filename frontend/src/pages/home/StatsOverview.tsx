@@ -1,12 +1,8 @@
 import { Card } from '@blueprintjs/core';
+import { formatBytes, formatInteger } from 'react-cheminfo/core';
 
 import type { DatabaseInfo, RsyncHistoryDoc } from '../../shared/api/types.ts';
-import {
-  formatBytes,
-  formatDateTime,
-  formatInteger,
-  formatRelative,
-} from '../../shared/format.ts';
+import { formatDateTime, formatRelative } from '../../shared/format.ts';
 
 interface StatsOverviewProps {
   pdb: DatabaseInfo;

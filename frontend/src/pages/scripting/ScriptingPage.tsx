@@ -57,7 +57,7 @@ interface ColorModule {
 /**
  * Page mounted at `/scripting` and `/scripting/:pdbId`. Lets students write a small JS script using
  * a curated helper API (`api.cpk`, `api.cartoon`, `api.echo`, …) that
- * drives the Mol* viewer. Replaces the legacy JSmol-based teaching tool.
+ * drives the Mol* viewer.
  *
  * URL params:
  *   `?scene=<id>`   – load a specific built-in scene on arrival (for sharing)

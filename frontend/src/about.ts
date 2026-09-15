@@ -1,4 +1,5 @@
 import type { AboutContent, Reference } from 'react-cheminfo/core';
+import { PLATFORM_WORK } from 'react-cheminfo/core';
 
 import { PAPER } from './shared/paper.ts';
 
@@ -95,6 +96,7 @@ export const ABOUT: AboutContent = {
     'vite',
   ],
   cite: [
+    PLATFORM_WORK,
     {
       reference: WWPDB_CONSORTIUM,
       what: 'The Protein Data Bank archive',
@@ -108,7 +110,7 @@ export const ABOUT: AboutContent = {
     {
       reference: PAPER,
       what: 'The founding Protein Data Bank paper',
-      note: 'The third of the three, and the one the Cite button in the header hands out.',
+      note: 'The third of the three references the wwPDB asks for.',
     },
     {
       reference: MOLSTAR_PAPER,

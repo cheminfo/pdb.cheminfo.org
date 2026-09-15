@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-
-import { useDebouncedValue } from '../../shared/useDebouncedValue.ts';
+import { downloadText } from 'react-cheminfo/core';
+import { useDebouncedValue } from 'react-cheminfo/ui';
 
 import type { BackupData, PersistedScene, Revision } from './db.ts';
 import {
@@ -215,15 +215,11 @@ export function useScriptingStorage(
 
   const exportBackup = useCallback(async () => {
     const data = await exportAll();
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `pdb-scripting-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadText(
+      JSON.stringify(data, null, 2),
+      `pdb-scripting-backup-${new Date().toISOString().slice(0, 10)}.json`,
+      'application/json',
+    );
   }, []);
 
   const importBackup = useCallback(

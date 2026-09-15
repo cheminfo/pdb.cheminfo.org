@@ -1,5 +1,6 @@
 import { Button, Card, ProgressBar, Spinner } from '@blueprintjs/core';
 import { useCallback, useEffect, useState } from 'react';
+import { formatInteger } from 'react-cheminfo/core';
 
 import {
   fetchDiagnostics,
@@ -13,7 +14,6 @@ import type {
   RebuildTitlesState,
   RenderThumbnailsState,
 } from '../../shared/api/types.ts';
-import { formatNumber } from '../../shared/format.ts';
 
 import { useJobPoller } from './useJobPoller.ts';
 
@@ -173,7 +173,7 @@ export default function DiagnosticsCard() {
       {diagStatus === 'done' && diag ? (
         <dl className="settings-sync-meta">
           <dt>PDB entries</dt>
-          <dd>{formatNumber(pdbCount)}</dd>
+          <dd>{formatInteger(pdbCount)}</dd>
 
           <dt>Empty titles</dt>
           <dd>
@@ -183,7 +183,7 @@ export default function DiagnosticsCard() {
               </span>
             ) : (
               <span>
-                {formatNumber(emptyTitleCount)} (
+                {formatInteger(emptyTitleCount)} (
                 {((emptyTitleCount / pdbCount) * 100).toFixed(2)}%) — PDB files
                 without a TITLE record
               </span>
@@ -200,8 +200,9 @@ export default function DiagnosticsCard() {
                         style={{ margin: '0 0 6px' }}
                         className="settings-muted"
                       >
-                        Rebuilding titles… {formatNumber(titlesState.processed)}{' '}
-                        / {formatNumber(titlesState.total)}
+                        Rebuilding titles…{' '}
+                        {formatInteger(titlesState.processed)} /{' '}
+                        {formatInteger(titlesState.total)}
                       </p>
                       <ProgressBar
                         value={
@@ -215,16 +216,16 @@ export default function DiagnosticsCard() {
                         style={{ margin: '6px 0 0' }}
                         className="settings-muted"
                       >
-                        Fixed: {formatNumber(titlesState.fixed)} · Skipped:{' '}
-                        {formatNumber(titlesState.skipped)}
+                        Fixed: {formatInteger(titlesState.fixed)} · Skipped:{' '}
+                        {formatInteger(titlesState.skipped)}
                       </p>
                     </>
                   ) : (
                     <p style={{ margin: 0 }}>
-                      Done — fixed {formatNumber(titlesState.fixed)} title
+                      Done — fixed {formatInteger(titlesState.fixed)} title
                       {titlesState.fixed !== 1 ? 's' : ''}
                       {titlesState.skipped > 0
-                        ? `, ${formatNumber(titlesState.skipped)} could not be recovered`
+                        ? `, ${formatInteger(titlesState.skipped)} could not be recovered`
                         : ''}
                       .
                     </p>
@@ -244,9 +245,9 @@ export default function DiagnosticsCard() {
 
           <dt>FTS-indexed</dt>
           <dd>
-            {formatNumber(ftsTitleCount)}{' '}
+            {formatInteger(ftsTitleCount)}{' '}
             <span className="settings-muted">
-              ({formatNumber(pdbCount - emptyTitleCount)} expected)
+              ({formatInteger(pdbCount - emptyTitleCount)} expected)
             </span>
           </dd>
 
@@ -256,14 +257,14 @@ export default function DiagnosticsCard() {
               <span className="settings-muted">no assembly entries found</span>
             ) : (
               <span>
-                {formatNumber(assemblyTotal - assemblyMissing)} /{' '}
-                {formatNumber(assemblyTotal)} have a PNG
+                {formatInteger(assemblyTotal - assemblyMissing)} /{' '}
+                {formatInteger(assemblyTotal)} have a PNG
                 {assemblyMissing === 0 ? (
                   <span className="settings-ok"> ✓</span>
                 ) : (
                   <span className="settings-muted">
                     {' '}
-                    — {formatNumber(assemblyMissing)} missing
+                    — {formatInteger(assemblyMissing)} missing
                   </span>
                 )}
               </span>
@@ -287,23 +288,23 @@ export default function DiagnosticsCard() {
                 <>
                   <p style={{ margin: '0 0 6px' }} className="settings-muted">
                     {jobLabel || 'Rendering thumbnails…'}{' '}
-                    {formatNumber(renderState.processed)} /{' '}
-                    {formatNumber(renderState.total)}
+                    {formatInteger(renderState.processed)} /{' '}
+                    {formatInteger(renderState.total)}
                   </p>
                   <ProgressBar value={renderProgress} intent="primary" />
                   <p style={{ margin: '6px 0 0' }} className="settings-muted">
-                    Rendered: {formatNumber(renderState.rendered)} · Skipped:{' '}
-                    {formatNumber(renderState.skipped)} · Failed:{' '}
-                    {formatNumber(renderState.failed)}
+                    Rendered: {formatInteger(renderState.rendered)} · Skipped:{' '}
+                    {formatInteger(renderState.skipped)} · Failed:{' '}
+                    {formatInteger(renderState.failed)}
                   </p>
                 </>
               ) : (
                 <p style={{ margin: 0 }}>
-                  Done — rendered {formatNumber(renderState.rendered)} new PNG
+                  Done — rendered {formatInteger(renderState.rendered)} new PNG
                   {renderState.rendered !== 1 ? 's' : ''}, skipped{' '}
-                  {formatNumber(renderState.skipped)} existing
+                  {formatInteger(renderState.skipped)} existing
                   {renderState.failed > 0
-                    ? `, ${formatNumber(renderState.failed)} failed`
+                    ? `, ${formatInteger(renderState.failed)} failed`
                     : ''}
                   .
                 </p>

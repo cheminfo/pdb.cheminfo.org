@@ -1,8 +1,8 @@
 import { HTMLTable } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
+import { Structure } from 'react-cheminfo/structure';
 import { MF } from 'react-mf';
 
-import LigandStructure from '../../shared/LigandStructure.tsx';
 import type { FocusSpec } from '../../shared/PdbViewer.tsx';
 import { fetchLigandsByCodes } from '../../shared/api/client.ts';
 import type { LigandSummary, PdbFormula } from '../../shared/api/types.ts';
@@ -20,7 +20,7 @@ interface LigandsTableProps {
 
 /**
  * Side-panel table of ligands / non-water HETATM records for the active PDB
- * entry. Water (`HOH`) is shown last to mirror the original tool. Each row
+ * entry. Water (`HOH`) is shown last. Each row
  * carries a focus button that highlights the matching residues in the 3D
  * viewer.
  * @param props - Component props.
@@ -81,10 +81,11 @@ export default function LigandsTable({
               </td>
               <td className="ligand-structure-cell">
                 {structure ? (
-                  <LigandStructure
+                  <Structure
                     idCode={structure.idCode}
                     width={70}
                     height={50}
+                    autoCrop={false}
                   />
                 ) : null}
               </td>

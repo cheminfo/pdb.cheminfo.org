@@ -1,5 +1,7 @@
+import { formatDecimal, formatInteger } from 'react-cheminfo/core';
+import { ColorScaleLegend } from 'react-cheminfo/ui';
+
 import type { PairFrequencyResponse } from '../../shared/api/types.ts';
-import { formatNumber } from '../../shared/format.ts';
 
 import type { AminoAcid } from './aminoAcids.ts';
 import { AA_ONE_LETTER, STANDARD_AA } from './aminoAcids.ts';
@@ -109,7 +111,7 @@ export default function CisHeatmap({ pairs }: CisHeatmapProps) {
             const tooltip =
               totalValue === 0
                 ? `${rowResidue}-${colResidue}: no observations`
-                : `${rowResidue}-${colResidue}: ${cisValue}/${formatNumber(totalValue)} = ${formatNumber(probability * 100, 2)} % cis`;
+                : `${rowResidue}-${colResidue}: ${cisValue}/${formatInteger(totalValue)} = ${formatDecimal(probability * 100, 2)} % cis`;
             return (
               <g key={`${rowResidue}-${colResidue}`}>
                 <rect
@@ -162,6 +164,9 @@ function cellColor(intensity: number | null): string {
   return `hsl(0, 75%, ${lightness}%)`;
 }
 
+/** The heatmap's own ramp, sampled for the legend. */
+const SCALE_STOPS = [0, 0.25, 0.5, 0.75, 1].map((stop) => cellColor(stop));
+
 interface ColorScaleProps {
   max: number;
 }
@@ -170,20 +175,15 @@ function ColorScale({ max }: ColorScaleProps) {
   if (max <= 0) {
     return <p className="omega-scale-empty">No cis bonds in this range.</p>;
   }
-  const stops = [0, 0.25, 0.5, 0.75, 1];
   return (
     <div className="omega-scale">
-      <span className="omega-scale-label">0 %</span>
-      <div className="omega-scale-bar">
-        {stops.map((stop) => (
-          <span
-            key={stop}
-            className="omega-scale-cell"
-            style={{ background: cellColor(stop) }}
-          />
-        ))}
-      </div>
-      <span className="omega-scale-label">{formatNumber(max * 100, 2)} %</span>
+      <ColorScaleLegend
+        scale={SCALE_STOPS}
+        min={0}
+        max={max * 100}
+        unit="%"
+        formatValue={(value) => formatDecimal(value, 2)}
+      />
     </div>
   );
 }

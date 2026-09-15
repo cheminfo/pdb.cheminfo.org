@@ -1,5 +1,6 @@
 import { Button, Card, Spinner } from '@blueprintjs/core';
 import { useCallback, useEffect, useState } from 'react';
+import { formatBytes } from 'react-cheminfo/core';
 
 import {
   fetchCcdHistory,
@@ -14,7 +15,7 @@ import type {
   RsyncSyncState,
   SyncStatusResponse,
 } from '../../shared/api/types.ts';
-import { formatBytes, formatDateTime } from '../../shared/format.ts';
+import { formatDateTime } from '../../shared/format.ts';
 
 import CcdHistoryTable from './CcdHistoryTable.tsx';
 import DiagnosticsCard from './DiagnosticsCard.tsx';

@@ -4,11 +4,13 @@ import { defineConfig } from 'vite';
 const backendPort = Number(process.env.PORT ?? 31015);
 const devServerPort = Number(process.env.VITE_PORT ?? backendPort + 1);
 const apiTarget = process.env.PDB_API_URL ?? `http://localhost:${backendPort}`;
+// `/stats/` keeps its slash, as in the backend's API_PREFIXES: `/stats` alone is
+// the Stats page, which the dev server has to answer with index.html.
 const apiPaths = [
   '/pdb',
   '/assembly',
   '/view',
-  '/stats',
+  '/stats/',
   '/find',
   '/rsync-history',
   '/v1',

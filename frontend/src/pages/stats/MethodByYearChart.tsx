@@ -1,29 +1,14 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { formatCompact, formatInteger } from 'react-cheminfo/core';
 import { useNavigate } from 'react-router';
 
 import { fetchMethodByYear } from '../../shared/api/client.ts';
 import Panel from '../../shared/charts/Panel.tsx';
 import { browseHref } from '../../shared/charts/browseLink.ts';
-import {
-  chartTheme,
-  formatCompact,
-  pickEveryNth,
-} from '../../shared/charts/theme.ts';
-import { formatNumber } from '../../shared/format.ts';
+import { methodColor } from '../../shared/charts/methodColors.ts';
+import { chartTheme, pickEveryNth } from '../../shared/charts/theme.ts';
 import { useAsync } from '../../shared/useAsync.ts';
 
-const METHOD_COLORS: Record<string, string> = {
-  'X-RAY DIFFRACTION': '#2563eb',
-  'ELECTRON MICROSCOPY': '#16a34a',
-  'SOLUTION NMR': '#f59e0b',
-  'SOLID-STATE NMR': '#ca8a04',
-  'NEUTRON DIFFRACTION': '#9333ea',
-  'FIBER DIFFRACTION': '#0891b2',
-  'POWDER DIFFRACTION': '#0ea5e9',
-  'ELECTRON CRYSTALLOGRAPHY': '#15803d',
-  'SOLUTION SCATTERING': '#dc2626',
-  Other: '#94a3b8',
-};
 const TOP_METHODS = 5;
 
 interface YearDatum {
@@ -86,10 +71,7 @@ export default function MethodByYearChart() {
           return <p className="placeholder">No data.</p>;
         }
         const keys = [...topMethods, 'Other'];
-        const fallback = METHOD_COLORS.Other ?? '#94a3b8';
-        const colors: string[] = keys.map(
-          (key) => METHOD_COLORS[key] ?? fallback,
-        );
+        const colors: string[] = keys.map((key) => methodColor(key));
 
         return (
           <div style={{ height: 320, cursor: 'pointer' }}>
@@ -148,7 +130,7 @@ export default function MethodByYearChart() {
                   <strong>
                     {indexValue} · {String(id)}
                   </strong>
-                  : {formatNumber(value)}
+                  : {formatInteger(value)}
                 </div>
               )}
               animate={false}

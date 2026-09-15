@@ -122,7 +122,7 @@ export function parseCssColorToHex(value: string): number | null {
 }
 
 /**
- * Subset of CSS named colors needed by the JSmol-port scenes. Extended
+ * Subset of CSS named colors needed by the demonstration scenes. Extended
  * lazily — every color used in a scene must appear here.
  */
 const CSS_NAMED_COLORS: Record<string, number> = {

@@ -1,5 +1,6 @@
 import { Card } from '@blueprintjs/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDebouncedValue } from 'react-cheminfo/ui';
 import { useSearchParams } from 'react-router';
 
 import type { OrderKey } from '../../shared/api/client.ts';
@@ -10,7 +11,6 @@ import {
 } from '../../shared/api/client.ts';
 import type { PdbDoc } from '../../shared/api/types.ts';
 import { useAsync } from '../../shared/useAsync.ts';
-import { useDebouncedValue } from '../../shared/useDebouncedValue.ts';
 
 import FilterPanel from './FilterPanel.tsx';
 import PdbTable from './PdbTable.tsx';

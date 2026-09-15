@@ -1,6 +1,6 @@
 import { Button, ButtonGroup, HTMLTable } from '@blueprintjs/core';
-import type { KeyboardEvent } from 'react';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { useListKeyboardNavigation } from 'react-cheminfo/ui';
 
 import type { PdbDoc } from '../../shared/api/types.ts';
 
@@ -44,40 +44,15 @@ export default function PdbTable({
     selectedRowRef.current?.scrollIntoView({ block: 'nearest' });
   }, [selectedId]);
 
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (rows.length === 0) return;
-    const currentIndex = rows.findIndex((row) => row._id === selectedId);
-    let nextIndex: number | null = null;
-    switch (event.key) {
-      case 'ArrowDown':
-        nextIndex = currentIndex === -1 ? 0 : currentIndex + 1;
-        break;
-      case 'ArrowUp':
-        nextIndex = currentIndex < 0 ? rows.length - 1 : currentIndex - 1;
-        break;
-      case 'PageDown':
-        nextIndex = Math.max(currentIndex, 0) + PAGE_STEP;
-        break;
-      case 'PageUp':
-        nextIndex =
-          (currentIndex < 0 ? rows.length - 1 : currentIndex) - PAGE_STEP;
-        break;
-      case 'Home':
-        nextIndex = 0;
-        break;
-      case 'End':
-        nextIndex = rows.length - 1;
-        break;
-      default:
-        return;
-    }
-    event.preventDefault();
-    const clamped = Math.max(0, Math.min(rows.length - 1, nextIndex));
-    const nextRow = rows[clamped];
-    if (nextRow && nextRow._id !== selectedId) {
-      onSelect(nextRow._id);
-    }
-  }
+  const handleKeyDown = useListKeyboardNavigation({
+    length: rows.length,
+    selectedIndex: rows.findIndex((row) => row._id === selectedId),
+    pageStep: PAGE_STEP,
+    onSelect: (index) => {
+      const nextRow = rows[index];
+      if (nextRow) onSelect(nextRow._id);
+    },
+  });
 
   return (
     <div className="pdb-table-host">

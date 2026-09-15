@@ -743,8 +743,7 @@ function selectFromString(expression: string): SelectionToken {
 
 /**
  * Convert a script-facing `seconds` value to the `durationMs` Mol* expects.
- * Undefined / non-positive values map to `0` so the camera snaps instantly,
- * matching the historical behaviour of `selection.zoom(factor)`.
+ * Undefined / non-positive values map to `0` so the camera snaps instantly.
  * @param seconds - Tween duration from the script API, or `undefined`.
  * @returns Mol* `durationMs` (rounded to integer milliseconds).
  */

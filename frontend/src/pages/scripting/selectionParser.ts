@@ -1,7 +1,7 @@
 /**
  * Tiny student-friendly selection language for the Scripting page. Compiles
- * to Mol* MolScript expressions (see `selectionCompiler.ts`), mirroring the
- * JSmol selection grammar that the historical teaching tool used.
+ * to Mol* MolScript expressions (see `selectionCompiler.ts`), following the
+ * JSmol selection grammar.
  *
  * Grammar:
  *   sel := atom | "not" sel | sel "or" sel | sel "and" sel | "(" sel ")"

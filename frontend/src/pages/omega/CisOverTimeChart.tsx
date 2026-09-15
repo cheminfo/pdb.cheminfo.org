@@ -1,4 +1,5 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { formatDecimal, formatInteger } from 'react-cheminfo/core';
 
 import type { OmegaByYearResponse } from '../../shared/api/types.ts';
 import {
@@ -6,7 +7,6 @@ import {
   chartTheme,
   pickEveryNth,
 } from '../../shared/charts/theme.ts';
-import { formatNumber } from '../../shared/format.ts';
 
 interface CisOverTimeChartProps {
   /** Per-year ω totals (rows of `omegaByYear`). */
@@ -83,8 +83,8 @@ export default function CisOverTimeChart({
         theme={chartTheme}
         tooltip={({ data: row }) => (
           <div className="chart-tooltip">
-            <strong>{row.index}</strong>: {formatNumber(row.percentage, 2)} %
-            cis ({formatNumber(row.nbCis)} / {formatNumber(row.nbBonds)})
+            <strong>{row.index}</strong>: {formatDecimal(row.percentage, 2)} %
+            cis ({formatInteger(row.nbCis)} / {formatInteger(row.nbBonds)})
           </div>
         )}
         animate={false}

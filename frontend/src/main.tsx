@@ -37,6 +37,9 @@ createRoot(container).render(
             <Route path="/api" element={<ApiPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/about" element={<AboutRoute />} />
+            {/* An unknown address opens the home page, which is also how the
+                server indexes it (backend/src/api/pageMeta.js). */}
+            <Route path="*" element={<HomePage />} />
           </Routes>
         </Layout>
       </BrowserRouter>

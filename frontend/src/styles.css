@@ -35,6 +35,8 @@ body {
   background: var(--surface-sunken);
 }
 
+/* The header, the banner and the page fill the viewport, so the footer below
+   is always reached by scrolling, however short the page is. */
 .app-shell {
   display: flex;
   flex-direction: column;
@@ -42,32 +44,37 @@ body {
 }
 
 .app-main {
-  flex: 1;
-  /* The page owns the screen it opens on, so the family links below it are
-     always reached by scrolling, however short the page is. */
-  min-height: calc(100dvh - var(--header-height));
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 }
 
 /* Browse and Scripting size a viewer and their splitters to the window, so
-   they take one screenful and scroll inside it. Every other page — and the
-   footer on all of them — stays in the document flow. */
+   they take one screenful and scroll inside it. */
+.app-shell:has(.browse-container),
+.app-shell:has(.scripting-page) {
+  height: 100dvh;
+}
+
 .app-main:has(.browse-container),
 .app-main:has(.scripting-page) {
-  /* `flex: 1` resolves to a zero basis, which would win over the height. */
-  flex: 0 0 auto;
-  height: calc(100dvh - var(--header-height));
-  overflow: hidden;
+  flex: 1 1 1px;
+  min-height: 0;
+  overflow: auto;
 }
 
 /* On phones, let the page scroll naturally so a long entry isn't cramped
    inside two stacked overflow regions. */
 @media (max-width: 720px) {
+  .app-shell:has(.browse-container),
+  .app-shell:has(.scripting-page) {
+    height: auto;
+  }
+
   .app-main:has(.browse-container),
   .app-main:has(.scripting-page) {
-    flex: 1;
-    height: auto;
+    flex: 1 1 auto;
+    min-height: auto;
     overflow: visible;
   }
 }
@@ -145,6 +152,18 @@ h2 {
   border-radius: var(--radius);
   padding: 20px;
   box-shadow: var(--shadow);
+}
+
+/* A phone: one thin gutter at the screen's edge, not the page's and the card's
+   stacked on top of each other. */
+@media (max-width: 720px) {
+  .container {
+    padding: 16px 8px 32px;
+  }
+
+  .panel {
+    padding: 12px;
+  }
 }
 
 .panel h3 {
@@ -532,6 +551,18 @@ h2 {
   display: flex;
   gap: 6px;
   flex-shrink: 0;
+}
+
+/* A phone: a long example address takes its own line and the buttons wrap
+   under it, rather than running past the card. */
+@media (max-width: 720px) {
+  .endpoint-row {
+    flex-wrap: wrap;
+  }
+
+  .endpoint a.example {
+    overflow-wrap: anywhere;
+  }
 }
 
 .endpoint-preview {
@@ -1469,25 +1500,7 @@ code {
 }
 
 .omega-scale {
-  display: flex;
-  align-items: center;
-  gap: 8px;
   margin-top: 12px;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.omega-scale-bar {
-  display: flex;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.omega-scale-cell {
-  display: inline-block;
-  width: 36px;
-  height: 14px;
 }
 
 .omega-scale-empty {
@@ -1874,6 +1887,24 @@ code {
 @media (max-width: 1100px) {
   .molecules-layout {
     grid-template-columns: 1fr;
+  }
+
+  /* Stacked, the column no longer holds a height for the editor to fill, and
+     the editor sizes itself to its box: without one of its own it keeps
+     growing. */
+  .molecules-editor-canvas {
+    flex: none;
+    height: 380px;
+  }
+}
+
+@media (max-width: 720px) {
+  .container.molecules-page {
+    padding: 12px 8px;
+  }
+
+  .molecules-page .panel {
+    padding: 10px;
   }
 }
 
@@ -2629,6 +2660,41 @@ code {
 .splitter-handle:active::before {
   width: 3px;
   background: var(--accent);
+}
+
+/* A phone has no room for two panes side by side: the viewer stacks over the
+   script, each with a height of its own, and the page scrolls. A column split
+   has no free height, so the inline flex-grow the splitter writes is inert. */
+@media (max-width: 720px) {
+  .scripting-page {
+    height: auto;
+    padding: 8px;
+  }
+
+  .scripting-content .splitter {
+    flex-direction: column;
+    gap: 12px;
+    height: auto;
+  }
+
+  .scripting-content .splitter-handle {
+    display: none;
+  }
+
+  .scripting-content .splitter-pane {
+    flex-basis: auto;
+    overflow: visible;
+  }
+
+  .scripting-viewer-fullscreen-wrap {
+    height: 60dvh;
+    min-height: 320px;
+  }
+
+  .scripting-editor-panel {
+    height: 70dvh;
+    min-height: 360px;
+  }
 }
 
 /* --- Floating window ------------------------------------------------- */

@@ -1,11 +1,8 @@
 import { HTMLTable } from '@blueprintjs/core';
+import { formatBytes, formatDuration } from 'react-cheminfo/core';
 
 import type { RsyncHistoryDoc } from '../../shared/api/types.ts';
-import {
-  formatBytes,
-  formatDateTime,
-  formatDuration,
-} from '../../shared/format.ts';
+import { formatDateTime } from '../../shared/format.ts';
 
 interface HistoryTableProps {
   rows: RsyncHistoryDoc[];

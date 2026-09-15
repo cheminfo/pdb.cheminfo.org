@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
+import { formatInteger } from 'react-cheminfo/core';
 
 import type { PdbDoc } from '../../shared/api/types.ts';
-import { formatInteger } from '../../shared/format.ts';
 
 import type { PdbHeaderInfo } from './parsePdbHeader.ts';
 

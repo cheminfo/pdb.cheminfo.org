@@ -1,13 +1,13 @@
 import { HTMLTable } from '@blueprintjs/core';
+import { formatDecimal, formatInteger } from 'react-cheminfo/core';
+import { Structure } from 'react-cheminfo/structure';
 import { MF } from 'react-mf';
 
-import LigandStructure from '../../shared/LigandStructure.tsx';
 import type {
   LigandSearchMode,
   LigandSort,
   LigandSummary,
 } from '../../shared/api/types.ts';
-import { formatNumber } from '../../shared/format.ts';
 
 import LigandSortableHeader from './LigandSortableHeader.tsx';
 
@@ -93,10 +93,11 @@ export default function LigandResultsTable({
                 onClick={() => onSelect(isActive ? null : ligand)}
               >
                 <td className="ligand-structure-cell">
-                  <LigandStructure
+                  <Structure
                     idCode={ligand.idCode}
                     width={120}
                     height={80}
+                    autoCrop={false}
                   />
                 </td>
                 <td className="mono">{ligand.code}</td>
@@ -106,12 +107,12 @@ export default function LigandResultsTable({
                 <td className="mf-cell">
                   <MF mf={ligand.mf} />
                 </td>
-                <td className="num">{formatNumber(ligand.mw, 2)}</td>
-                <td className="num">{formatNumber(ligand.nbPdbs)}</td>
+                <td className="num">{formatDecimal(ligand.mw, 2)}</td>
+                <td className="num">{formatInteger(ligand.nbPdbs)}</td>
                 {showSimilarity && (
                   <td className="num">
                     {ligand.similarity != null
-                      ? `${formatNumber(ligand.similarity * 100, 1)}%`
+                      ? `${formatDecimal(ligand.similarity * 100, 1)}%`
                       : '—'}
                   </td>
                 )}

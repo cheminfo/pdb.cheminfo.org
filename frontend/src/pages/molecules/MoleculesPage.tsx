@@ -6,6 +6,7 @@ import {
   Spinner,
 } from '@blueprintjs/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { formatInteger } from 'react-cheminfo/core';
 import type { OnChangeMoleculeCallback } from 'react-ocl';
 import { CanvasMoleculeEditor } from 'react-ocl';
 
@@ -17,7 +18,6 @@ import type {
   LigandSort,
   LigandSummary,
 } from '../../shared/api/types.ts';
-import { formatNumber } from '../../shared/format.ts';
 
 import LigandFilterFields from './LigandFilterFields.tsx';
 import LigandPagination from './LigandPagination.tsx';
@@ -332,7 +332,7 @@ function formatStats(
   const { total, stats } = result;
   if (!hasQuery) return '';
   const overflow = stats.overLimit ? '+' : '';
-  const count = `${formatNumber(total)}${overflow} match${total !== 1 ? 'es' : ''}`;
+  const count = `${formatInteger(total)}${overflow} match${total !== 1 ? 'es' : ''}`;
   const ms = stats.screeningMs + stats.verificationMs;
   if (mode === 'similarity') {
     return `${count} · ranked by similarity in ${ms.toString()} ms`;

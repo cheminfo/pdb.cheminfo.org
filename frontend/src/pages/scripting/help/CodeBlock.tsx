@@ -1,5 +1,5 @@
-import { Button } from '@blueprintjs/core';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
+import { CopyButton } from 'react-cheminfo/ui';
 
 import { highlightCode } from './highlight.ts';
 
@@ -21,21 +21,7 @@ interface CodeBlockProps {
  * @returns Code block element.
  */
 export default function CodeBlock({ children }: CodeBlockProps) {
-  const [copied, setCopied] = useState(false);
   const tokens = useMemo(() => highlightCode(children), [children]);
-
-  useEffect(() => {
-    if (!copied) return undefined;
-    const timer = setTimeout(() => setCopied(false), 1500);
-    return () => clearTimeout(timer);
-  }, [copied]);
-
-  function handleCopy() {
-    navigator.clipboard.writeText(children).then(
-      () => setCopied(true),
-      () => setCopied(false),
-    );
-  }
 
   return (
     <div className="help-code">
@@ -49,17 +35,13 @@ export default function CodeBlock({ children }: CodeBlockProps) {
           </span>
         ))}
       </pre>
-      <Button
+      <CopyButton
         className="help-code-copy"
-        icon={copied ? 'tick' : 'duplicate'}
-        variant="minimal"
-        size="small"
-        onClick={handleCopy}
-        aria-label="Copy code"
-        title="Copy to clipboard"
-      >
-        {copied ? 'Copied' : 'Copy'}
-      </Button>
+        content={children}
+        label="Copy"
+        minimal
+        small
+      />
     </div>
   );
 }

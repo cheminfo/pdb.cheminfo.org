@@ -1,12 +1,8 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { formatCompact, formatInteger } from 'react-cheminfo/core';
 
 import type { ViewResponse } from '../../shared/api/types.ts';
-import {
-  chartAccent,
-  chartTheme,
-  formatCompact,
-} from '../../shared/charts/theme.ts';
-import { formatNumber } from '../../shared/format.ts';
+import { chartAccent, chartTheme } from '../../shared/charts/theme.ts';
 
 interface ExperimentChartProps {
   data: ViewResponse<string>;
@@ -61,7 +57,7 @@ export default function ExperimentChart({ data }: ExperimentChartProps) {
         theme={chartTheme}
         tooltip={({ indexValue, value }) => (
           <div className="chart-tooltip">
-            <strong>{indexValue}</strong>: {formatNumber(value)} structures
+            <strong>{indexValue}</strong>: {formatInteger(value)} structures
           </div>
         )}
         animate={false}

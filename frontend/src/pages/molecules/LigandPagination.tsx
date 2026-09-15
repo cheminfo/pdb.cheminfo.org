@@ -1,6 +1,5 @@
 import { Button, ButtonGroup } from '@blueprintjs/core';
-
-import { formatNumber } from '../../shared/format.ts';
+import { formatInteger } from 'react-cheminfo/core';
 
 interface LigandPaginationProps {
   /** Total matches, before pagination. */
@@ -41,7 +40,7 @@ export default function LigandPagination({
       <span className="molecules-pagination-summary">
         {total === 0
           ? 'No ligands'
-          : `${formatNumber(first)}–${formatNumber(last)} of ${formatNumber(total)} ligands`}
+          : `${formatInteger(first)}–${formatInteger(last)} of ${formatInteger(total)} ligands`}
       </span>
       <ButtonGroup size="small">
         <Button

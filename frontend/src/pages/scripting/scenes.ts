@@ -1,6 +1,5 @@
 /**
- * Demonstration scenes ported from the historical JSmol teaching tool. Each
- * `code` string is exactly what gets loaded into the editor when the user
+ * Demonstration scenes. Each `code` string is exactly what gets loaded into the editor when the user
  * clicks the matching button on the Scripting page.
  *
  * Scripts are written in the synchronous-looking style: the runner

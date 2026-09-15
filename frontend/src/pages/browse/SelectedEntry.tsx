@@ -1,5 +1,6 @@
 import { Button, Card, Tab, Tabs, Tag } from '@blueprintjs/core';
 import { useCallback, useRef, useState } from 'react';
+import { useCopyToClipboard } from 'react-cheminfo/ui';
 import { Link } from 'react-router';
 import { FullScreenProvider } from 'react-science/ui';
 
@@ -112,6 +113,9 @@ function SideTabs({ doc, selectedKey, onFocus }: SideTabsProps) {
   );
 }
 
+/** How long the PDB-code button says it copied, in milliseconds. */
+const COPY_RESET_MS = 1200;
+
 /**
  * Centre column (entry header + viewer + PDB header) and right column
  * (side tables) of the currently-selected entry, rendered as siblings of
@@ -123,7 +127,7 @@ function SideTabs({ doc, selectedKey, onFocus }: SideTabsProps) {
 export default function SelectedEntry({ doc }: SelectedEntryProps) {
   const fetchTextForId = useCallback(() => fetchPdbText(doc._id), [doc._id]);
   const pdbText = useAsync(fetchTextForId);
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard(COPY_RESET_MS);
   const [representation, setRepresentation] = useState<RepresentationName>(
     DEFAULT_REPRESENTATION,
   );
@@ -153,10 +157,7 @@ export default function SelectedEntry({ doc }: SelectedEntryProps) {
   );
 
   function copyId() {
-    void navigator.clipboard.writeText(doc._id).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1200);
-    });
+    void copy(doc._id);
   }
 
   return (

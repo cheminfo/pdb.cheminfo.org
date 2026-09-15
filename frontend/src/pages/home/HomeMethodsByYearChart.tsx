@@ -1,24 +1,22 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { formatCompact, formatInteger } from 'react-cheminfo/core';
 import { useNavigate } from 'react-router';
 
 import { fetchMethodByYear } from '../../shared/api/client.ts';
 import Panel from '../../shared/charts/Panel.tsx';
 import { browseHref } from '../../shared/charts/browseLink.ts';
-import {
-  chartTheme,
-  formatCompact,
-  pickEveryNth,
-} from '../../shared/charts/theme.ts';
-import { formatNumber } from '../../shared/format.ts';
+import { methodColor } from '../../shared/charts/methodColors.ts';
+import { chartTheme, pickEveryNth } from '../../shared/charts/theme.ts';
 import { useAsync } from '../../shared/useAsync.ts';
 
 const BUCKETS = ['X-ray', 'EM', 'NMR', 'Other'];
 
-const BUCKET_COLORS: Record<string, string> = {
-  'X-ray': '#2563eb',
-  EM: '#16a34a',
-  NMR: '#f59e0b',
-  Other: '#94a3b8',
+/** The method each bucket borrows its colour from, so the two method charts agree. */
+const BUCKET_METHOD: Record<string, string> = {
+  'X-ray': 'X-RAY DIFFRACTION',
+  EM: 'ELECTRON MICROSCOPY',
+  NMR: 'SOLUTION NMR',
+  Other: 'Other',
 };
 
 const BROWSE_METHOD: Record<string, string | undefined> = {
@@ -80,7 +78,9 @@ export default function HomeMethodsByYearChart() {
           return <p className="placeholder">No data.</p>;
         }
 
-        const colors = BUCKETS.map((b) => BUCKET_COLORS[b] ?? '#94a3b8');
+        const colors = BUCKETS.map((bucket) =>
+          methodColor(BUCKET_METHOD[bucket] ?? 'Other'),
+        );
 
         return (
           <div style={{ height: 320, cursor: 'pointer' }}>
@@ -139,7 +139,7 @@ export default function HomeMethodsByYearChart() {
                   <strong>
                     {indexValue} · {String(id)}
                   </strong>
-                  : {formatNumber(value)}
+                  : {formatInteger(value)}
                 </div>
               )}
               animate={false}

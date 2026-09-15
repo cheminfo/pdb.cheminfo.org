@@ -134,7 +134,7 @@ pdb.select('protein').surface.color({                       // and transparent
             <strong>
               No <code>moveto</code>.
             </strong>{' '}
-            JSmol&apos;s explicit camera matrices are not ported. Use{' '}
+            Explicit camera matrices are not supported. Use{' '}
             <code>selection.focus()</code>, <code>selection.zoom(factor)</code>{' '}
             or <code>ms.fit()</code>.
           </li>

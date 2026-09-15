@@ -1,8 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar';
+import { formatCompact, formatInteger } from 'react-cheminfo/core';
 
-import { formatNumber } from '../format.ts';
-
-import { chartAccent, chartTheme, formatCompact } from './theme.ts';
+import { chartAccent, chartTheme } from './theme.ts';
 
 interface HistogramBarProps {
   /** Pre-sorted data, where `index` is the categorical x-label. */
@@ -128,7 +127,7 @@ export default function HistogramBar(props: HistogramBarProps) {
         theme={chartTheme}
         tooltip={({ indexValue, value }) => (
           <div className="chart-tooltip">
-            <strong>{indexValue}</strong>: {formatNumber(value)}
+            <strong>{indexValue}</strong>: {formatInteger(value)}
             {valueLabel}
           </div>
         )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatInteger } from 'react-cheminfo/core';
 
 import { fetchSyncStatus } from './api/client.ts';
 import type {
@@ -6,7 +7,6 @@ import type {
   SyncRunningInfo,
   SyncStatusResponse,
 } from './api/types.ts';
-import { formatNumber } from './format.ts';
 
 const POLL_INTERVAL_RUNNING_MS = 2_000;
 const POLL_INTERVAL_IDLE_MS = 30_000;
@@ -83,8 +83,8 @@ export default function SeedingBanner() {
       : null;
   const counter =
     typeof total === 'number' && total > 0
-      ? `${formatNumber(processed)} / ${formatNumber(total)}`
-      : `${formatNumber(processed)} files`;
+      ? `${formatInteger(processed)} / ${formatInteger(total)}`
+      : `${formatInteger(processed)} files`;
 
   return (
     <div
@@ -100,9 +100,9 @@ export default function SeedingBanner() {
           {percent !== null ? ` (${percent}%)` : ''}
           {running.lastEntryId ? ` · last: ${running.lastEntryId}` : ''}
           {running.renderStats
-            ? ` · pymol: ${formatNumber(running.renderStats.rendered)} rendered, ${formatNumber(running.renderStats.skipped)} skipped${
+            ? ` · pymol: ${formatInteger(running.renderStats.rendered)} rendered, ${formatInteger(running.renderStats.skipped)} skipped${
                 running.renderStats.failed > 0
-                  ? `, ${formatNumber(running.renderStats.failed)} failed`
+                  ? `, ${formatInteger(running.renderStats.failed)} failed`
                   : ''
               }`
             : ''}

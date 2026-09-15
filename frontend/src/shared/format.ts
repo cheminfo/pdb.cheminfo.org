@@ -1,38 +1,4 @@
-const integerFormatter = new Intl.NumberFormat('en-US');
-
-const BYTE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB'] as const;
-
-/**
- * Format an integer with thousands separators.
- * @param value - Integer to format.
- * @returns The integer formatted with thousands separators (en-US locale).
- */
-export function formatInteger(value: number): string {
-  return integerFormatter.format(value);
-}
-
-const decimalFormatters = new Map<number, Intl.NumberFormat>();
-
-/**
- * Format a number with thousands separators and a fixed number of fractional
- * digits. Pass `decimals = 0` (or omit it) for plain integer formatting.
- * Backed by cached `Intl.NumberFormat` instances.
- * @param value - Number to format.
- * @param decimals - Number of fractional digits to display. Defaults to `0`.
- * @returns Locale-formatted string (en-US).
- */
-export function formatNumber(value: number, decimals = 0): string {
-  if (decimals === 0) return integerFormatter.format(value);
-  let formatter = decimalFormatters.get(decimals);
-  if (!formatter) {
-    formatter = new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: decimals,
-      maximumFractionDigits: decimals,
-    });
-    decimalFormatters.set(decimals, formatter);
-  }
-  return formatter.format(value);
-}
+import { MISSING_VALUE } from 'react-cheminfo/core';
 
 const dateTimeFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'medium',
@@ -51,9 +17,9 @@ const relativeFormatter = new Intl.RelativeTimeFormat('en-US', {
  * @returns Formatted date+time, or `–`.
  */
 export function formatDateTime(value: string | undefined): string {
-  if (!value) return '–';
+  if (!value) return MISSING_VALUE;
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '–';
+  if (Number.isNaN(date.getTime())) return MISSING_VALUE;
   return dateTimeFormatter.format(date);
 }
 
@@ -82,43 +48,4 @@ export function formatRelative(value: string | undefined): string {
     }
   }
   return relativeFormatter.format(Math.round(diffMs / 1000), 'second');
-}
-
-/**
- * Format a millisecond duration as a compact `Xh Ym` / `Xm Ys` / `Xs` string.
- * Returns an en-dash when the value is missing or non-positive — same shape
- * the rsync/CCD history tables use to mark empty cells.
- * @param ms - Duration in milliseconds.
- * @returns Compact duration string, or `–`.
- */
-export function formatDuration(ms: number): string {
-  if (!Number.isFinite(ms) || ms <= 0) return '–';
-  const seconds = Math.round(ms / 1000);
-  if (seconds < 60) return `${seconds}s`;
-  const minutes = Math.floor(seconds / 60);
-  const remaining = seconds % 60;
-  if (minutes < 60) return `${minutes}m ${remaining}s`;
-  const hours = Math.floor(minutes / 60);
-  const minRemaining = minutes % 60;
-  return `${hours}h ${minRemaining}m`;
-}
-
-/**
- * Format a byte count as a human-readable size.
- * Returns an en-dash when the value is missing or non-positive.
- * @param bytes - Raw byte count.
- * @returns Human-readable size with unit, or `–` when the input is missing.
- */
-export function formatBytes(bytes: number | undefined): string {
-  if (!Number.isFinite(bytes) || bytes === undefined || bytes <= 0) {
-    return '–';
-  }
-  let value = bytes;
-  let unitIndex = 0;
-  while (value >= 1024 && unitIndex < BYTE_UNITS.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-  const decimals = value >= 100 ? 0 : 1;
-  return `${value.toFixed(decimals)} ${BYTE_UNITS[unitIndex]}`;
 }

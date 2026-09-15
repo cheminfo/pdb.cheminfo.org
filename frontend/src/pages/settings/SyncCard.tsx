@@ -1,5 +1,6 @@
 import { Button, Card, Intent, ProgressBar, Tag } from '@blueprintjs/core';
 import type { ReactNode } from 'react';
+import { formatBytes, formatInteger } from 'react-cheminfo/core';
 
 import type {
   CcdSyncState,
@@ -8,12 +9,7 @@ import type {
   SyncPhase,
   SyncRunningInfo,
 } from '../../shared/api/types.ts';
-import {
-  formatBytes,
-  formatDateTime,
-  formatInteger,
-  formatRelative,
-} from '../../shared/format.ts';
+import { formatDateTime, formatRelative } from '../../shared/format.ts';
 
 type SyncState = RsyncSyncState | CcdSyncState;
 

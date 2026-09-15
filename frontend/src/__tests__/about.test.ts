@@ -50,6 +50,7 @@ test('the About credits every borrowed work the site runs on', () => {
 
 test('the About asks for the three wwPDB references and the Mol* paper', () => {
   expect(ABOUT.cite?.map((work) => work.reference.doi)).toStrictEqual([
+    '10.2533/chimia.2025.66',
     '10.1093/nar/gky949',
     '10.1038/nsb1203-980',
     '10.1093/nar/28.1.235',

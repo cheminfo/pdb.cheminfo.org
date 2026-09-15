@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { downloadBlob } from 'react-cheminfo/core';
 
 export interface CanvasRecording {
   /** True while a MediaRecorder is actively writing to the buffer. */
@@ -109,17 +110,6 @@ function pickSupportedMimeType(): string | undefined {
     if (MediaRecorder.isTypeSupported(candidate)) return candidate;
   }
   return undefined;
-}
-
-function downloadBlob(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const anchor = document.createElement('a');
-  anchor.href = url;
-  anchor.download = filename;
-  document.body.append(anchor);
-  anchor.click();
-  anchor.remove();
-  URL.revokeObjectURL(url);
 }
 
 function suggestedFilename(mimeType: string): string {
