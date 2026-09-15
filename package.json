@@ -27,6 +27,7 @@
   "license": "MIT",
   "scripts": {
     "api": "npm run api -w backend",
+    "check-deploy": "node node_modules/react-cheminfo/bin/check-deploy.mjs",
     "check-env": "node -e \"if(!require('node:fs').existsSync('.env')){console.error('\\nERROR: .env is required.\\nRun:  cp .env.example .env\\n');process.exit(1)}\"",
     "check-tokens": "node node_modules/react-cheminfo/bin/check-tokens.mjs frontend/src backend/src",
     "check-types": "npm run check-types -w frontend",
@@ -43,7 +44,7 @@
     "rebuild": "npm run rebuild -w backend",
     "seed": "npm run seed -w backend",
     "seed-ccd": "npm run seed-ccd -w backend",
-    "test": "npm run test-only && npm run check-types && npm run check-tokens && npm run eslint && npm run prettier",
+    "test": "npm run test-only && npm run check-types && npm run check-tokens && npm run check-deploy && npm run eslint && npm run prettier",
     "test-e2e": "npm run test-e2e -w frontend",
     "test-only": "npm run test-only -w backend && npm run test-only -w frontend",
     "update": "npm run update -w backend"
