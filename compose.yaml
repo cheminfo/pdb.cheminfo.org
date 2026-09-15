@@ -1,5 +1,6 @@
 services:
   node-pdb-sync:
+    # healthcheck-ok: a cron worker: it mirrors the PDB and serves no HTTP to probe.
     # Use the released image by default. To build locally instead, run:
     #   docker compose up -d --build
     image: ${IMAGE_NAME:-ghcr.io/cheminfo/pdb.cheminfo.org}:${IMAGE_TAG:-latest}
@@ -7,7 +8,8 @@ services:
     volumes:
       - ./data:/app/data:z
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       DEBUG: '*'
     restart: unless-stopped
@@ -61,6 +63,13 @@ services:
     #   docker compose up -d --build
     image: ${IMAGE_NAME:-ghcr.io/cheminfo/pdb.cheminfo.org}:${IMAGE_TAG:-latest}
     build: .
+    # What the server's deploy script probes before it keeps a new container.
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://127.0.0.1:31015/health']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     ports:
       # Falls back to the in-container port so an .env without PUBLIC_PORT
       # publishes on a predictable host port instead of a random one.
@@ -68,7 +77,8 @@ services:
     volumes:
       - ./data:/app/data:z
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       DEBUG: '*'
       PORT: '31015'
@@ -117,6 +127,7 @@ services:
     command: npm run api
 
   pdb-api-cron:
+    # healthcheck-ok: a cron worker: it refreshes the CCD and serves no HTTP to probe.
     # Periodically refreshes data/sqlite/db.sqlite from the wwPDB
     # Chemical Component Dictionary (weekly upstream cadence). Idle most
     # of the time, but the import phase synchronously parses ~40k CCD
@@ -128,7 +139,8 @@ services:
     volumes:
       - ./data:/app/data:z
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       DEBUG: '*'
       # `--max-old-space-size` lifts the v8 heap cap above the default 4 GiB

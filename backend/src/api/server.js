@@ -63,6 +63,10 @@ export async function buildApp({ db, logger = false, staticDir }) {
     }
   });
 
+  // Unversioned on purpose: this is what the container healthcheck and the
+  // server's deploy script probe, and neither follows an API version.
+  app.get('/health', () => ({ status: 'ok' }));
+
   registerAuthRoutes(app, db);
   v1(app, db);
   if (staticDir) {
