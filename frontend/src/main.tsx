@@ -12,6 +12,7 @@ import ScriptingPage from './pages/scripting/ScriptingPage.tsx';
 import SettingsPage from './pages/settings/SettingsPage.tsx';
 import StatsPage from './pages/stats/StatsPage.tsx';
 import Layout from './shared/Layout.tsx';
+import { BASE_PATH } from './state/site.ts';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
@@ -25,7 +26,7 @@ if (!container) {
 createRoot(container).render(
   <StrictMode>
     <OverlaysProvider>
-      <BrowserRouter>
+      <BrowserRouter basename={BASE_PATH || undefined}>
         <Layout>
           <Routes>
             <Route path="/" element={<HomePage />} />

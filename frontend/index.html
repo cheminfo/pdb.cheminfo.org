@@ -1,9 +1,16 @@
 <!doctype html>
 <html lang="en">
   <head>
+    <!-- Where this deployment is mounted. The build itself carries no mount —
+         its assets are relative — so this is what resolves them, and what the
+         page reads its own mount back off. A deployment serving the site under
+         a path rewrites it, which is how one build serves this site's own host
+         and a path of a shared one. It has to come before anything it
+         resolves. -->
+    <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <meta name="theme-color" content="#2563eb" />
     <!-- The title, the description, the canonical address, the social card and
          the structured data are written here, per route, by the server (see
@@ -13,7 +20,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="./src/main.tsx"></script>
     <!-- The crawl path for a reader with no JavaScript, written here by the
          same injector. -->
     <!--cheminfo:body-->

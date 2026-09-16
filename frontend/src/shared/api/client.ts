@@ -1,3 +1,5 @@
+import { withBase } from '../../state/site.ts';
+
 import type {
   CcdHistoryResponse,
   DatabaseInfo,
@@ -50,7 +52,7 @@ async function fetchJson<TResponse>(
   url: string,
   signal?: AbortSignal,
 ): Promise<TResponse> {
-  const response = await fetch(url, signal ? { signal } : undefined);
+  const response = await fetch(withBase(url), signal ? { signal } : undefined);
   assertOk(response);
   return response.json() as Promise<TResponse>;
 }
@@ -326,7 +328,9 @@ function emptyStats(): StatsValue {
  * @returns Promise resolving to the PDB file as a string.
  */
 export async function fetchPdbText(pdbId: string): Promise<string> {
-  const response = await fetch(`/v1/pdbs/${encodeURIComponent(pdbId)}/raw`);
+  const response = await fetch(
+    withBase(`/v1/pdbs/${encodeURIComponent(pdbId)}/raw`),
+  );
   assertOk(response);
   return response.text();
 }
@@ -406,7 +410,7 @@ export function fetchSyncStatus(): Promise<SyncStatusResponse> {
 export async function triggerSync(
   kind: 'rsync' | 'ccd',
 ): Promise<SyncTriggerResponse> {
-  const response = await fetch('/v1/sync/trigger', {
+  const response = await fetch(withBase('/v1/sync/trigger'), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ kind }),
@@ -438,7 +442,7 @@ export async function triggerRenderThumbnails(options?: {
   if (options?.nmrOnly) params.set('nmrOnly', 'true');
   else if (options?.force) params.set('force', 'true');
   const query = params.size > 0 ? `?${params.toString()}` : '';
-  const response = await fetch(`/v1/fix/render-thumbnails${query}`, {
+  const response = await fetch(withBase(`/v1/fix/render-thumbnails${query}`), {
     method: 'POST',
   });
   assertOk(response);
@@ -463,7 +467,9 @@ export function fetchRenderThumbnailsStatus(): Promise<RenderThumbnailsStatusRes
  * @returns Promise resolving to the trigger response.
  */
 export async function triggerRebuildTitles(): Promise<RebuildTitlesTriggerResponse> {
-  const response = await fetch('/v1/fix/rebuild-titles', { method: 'POST' });
+  const response = await fetch(withBase('/v1/fix/rebuild-titles'), {
+    method: 'POST',
+  });
   assertOk(response);
   return response.json() as Promise<RebuildTitlesTriggerResponse>;
 }

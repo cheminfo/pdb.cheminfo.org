@@ -17,6 +17,11 @@ const apiPaths = [
 ];
 
 export default defineConfig({
+  // The build carries no mount path. Every asset is written relative, so the
+  // one `dist` serves this site's own host and a path of a shared one without
+  // being rebuilt: the `<base>` the page carries is what resolves them, and the
+  // router reads its mount back off that.
+  base: './',
   plugins: [react()],
   build: {
     outDir: '../backend/public',

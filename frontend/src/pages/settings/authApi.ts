@@ -1,9 +1,11 @@
+import { withBase } from '../../state/site.ts';
+
 /**
  * Check whether the current session cookie is valid.
  * Returns true when authenticated or when auth is not configured server-side.
  */
 export async function checkAuth(): Promise<boolean> {
-  const response = await fetch('/auth/me');
+  const response = await fetch(withBase('/auth/me'));
   return response.ok;
 }
 
@@ -14,7 +16,7 @@ export async function checkAuth(): Promise<boolean> {
  * @param password - Admin password.
  */
 export async function login(username: string, password: string): Promise<void> {
-  const response = await fetch('/auth/login', {
+  const response = await fetch(withBase('/auth/login'), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ username, password }),
@@ -26,7 +28,7 @@ export async function login(username: string, password: string): Promise<void> {
 
 /** Clear the session cookie server-side. */
 export async function logout(): Promise<void> {
-  await fetch('/auth/logout', { method: 'POST' });
+  await fetch(withBase('/auth/logout'), { method: 'POST' });
 }
 
 /**
@@ -39,7 +41,7 @@ export async function changePassword(
   currentPassword: string,
   newPassword: string,
 ): Promise<void> {
-  const response = await fetch('/auth/change-password', {
+  const response = await fetch(withBase('/auth/change-password'), {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ currentPassword, newPassword }),
