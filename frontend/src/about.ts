@@ -1,3 +1,4 @@
+import { BUILD_INFO } from 'react-cheminfo/build-info';
 import type { AboutContent, Reference } from 'react-cheminfo/core';
 import { PLATFORM_WORK } from 'react-cheminfo/core';
 
@@ -70,6 +71,9 @@ const MOLSTAR_PAPER: Reference = {
 /** What this site says about itself, at `/about`. */
 export const ABOUT: AboutContent = {
   siteId: 'pdb',
+  // Which release, built when, from which commit: the build says so,
+  // because a version written by hand is wrong by the next release.
+  build: BUILD_INFO,
   what: 'A read-only mirror of the worldwide Protein Data Bank, served with a search index, an HTTP API and pre-rendered views.',
   can: [
     'Open any entry by its identifier and read its chains, ligands and assemblies.',

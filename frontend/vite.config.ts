@@ -1,4 +1,5 @@
 import react from '@vitejs/plugin-react';
+import { cheminfoBuildInfo } from 'react-cheminfo/vite';
 import { defineConfig } from 'vite';
 
 const backendPort = Number(process.env.PORT ?? 31015);
@@ -22,7 +23,7 @@ export default defineConfig({
   // being rebuilt: the `<base>` the page carries is what resolves them, and the
   // router reads its mount back off that.
   base: './',
-  plugins: [react()],
+  plugins: [react(), cheminfoBuildInfo()],
   build: {
     outDir: '../backend/public',
     emptyOutDir: true,
