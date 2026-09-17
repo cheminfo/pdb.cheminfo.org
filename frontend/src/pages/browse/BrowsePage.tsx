@@ -1,6 +1,6 @@
 import { Card } from '@blueprintjs/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDebouncedValue } from 'react-cheminfo/ui';
+import { PagePart, useDebouncedValue } from 'react-cheminfo/ui';
 import { useSearchParams } from 'react-router';
 
 import type { OrderKey } from '../../shared/api/client.ts';
@@ -11,6 +11,7 @@ import {
 } from '../../shared/api/client.ts';
 import type { PdbDoc } from '../../shared/api/types.ts';
 import { useAsync } from '../../shared/useAsync.ts';
+import { carryShareConfig } from '../../state/shareConfig.ts';
 
 import FilterPanel from './FilterPanel.tsx';
 import PdbTable from './PdbTable.tsx';
@@ -67,8 +68,14 @@ export default function BrowsePage() {
   // Push state changes into the URL so deep-links from the stats page work and
   // the back button restores the previous filter combination.
   useEffect(() => {
-    const next = filterStateToUrl(filters, query, smart, order, seed);
     const current = searchParams.toString();
+    // The filters rebuild the whole query string, so the configuration the link
+    // carries is written back into it: a framed page that loses `embed` on the
+    // first slider drag hands the host page its chrome back.
+    const next = carryShareConfig(
+      filterStateToUrl(filters, query, smart, order, seed),
+      current,
+    );
     if (next.toString() !== current) {
       setSearchParams(next, { replace: true });
     }
@@ -126,40 +133,44 @@ export default function BrowsePage() {
   return (
     <div className="browse-container">
       <div className="browse-grid">
-        <FilterPanel
-          query={query}
-          onQueryChange={setQuery}
-          smart={smart}
-          onSmartChange={setSmart}
-          matchCount={docs.length}
-          totalCount={totalCount}
-          methodCounts={methodCounts}
-          stats={stats.status === 'success' ? stats.data : undefined}
-          filters={filters}
-          onChange={setFilters}
-          order={order}
-          onOrderChange={handleOrderChange}
-          onShuffle={shuffleSeed}
-        />
-        <div className="browse-list-col">
-          <Card className="browse-list panel">
-            {findResult.status === 'loading' && (
-              <p className="placeholder pdb-table-empty">Searching…</p>
-            )}
-            {findResult.status === 'error' && (
-              <p className="placeholder pdb-table-empty">
-                Search failed: {findResult.error.message}
-              </p>
-            )}
-            {findResult.status === 'success' && (
-              <PdbTable
-                rows={docs}
-                selectedId={selectedId}
-                onSelect={setPickedId}
-              />
-            )}
-          </Card>
-        </div>
+        <PagePart part="filters">
+          <FilterPanel
+            query={query}
+            onQueryChange={setQuery}
+            smart={smart}
+            onSmartChange={setSmart}
+            matchCount={docs.length}
+            totalCount={totalCount}
+            methodCounts={methodCounts}
+            stats={stats.status === 'success' ? stats.data : undefined}
+            filters={filters}
+            onChange={setFilters}
+            order={order}
+            onOrderChange={handleOrderChange}
+            onShuffle={shuffleSeed}
+          />
+        </PagePart>
+        <PagePart part="list">
+          <div className="browse-list-col">
+            <Card className="browse-list panel">
+              {findResult.status === 'loading' && (
+                <p className="placeholder pdb-table-empty">Searching…</p>
+              )}
+              {findResult.status === 'error' && (
+                <p className="placeholder pdb-table-empty">
+                  Search failed: {findResult.error.message}
+                </p>
+              )}
+              {findResult.status === 'success' && (
+                <PdbTable
+                  rows={docs}
+                  selectedId={selectedId}
+                  onSelect={setPickedId}
+                />
+              )}
+            </Card>
+          </div>
+        </PagePart>
         {selectedDoc ? (
           <SelectedEntry doc={selectedDoc} />
         ) : (
@@ -173,7 +184,9 @@ export default function BrowsePage() {
                 </p>
               </Card>
             </div>
-            <Card className="panel browse-side" />
+            <PagePart part="annotations">
+              <Card className="panel browse-side" />
+            </PagePart>
           </>
         )}
       </div>

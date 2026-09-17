@@ -33,8 +33,13 @@ function collectErrors(page: Page): string[] {
  * Click the 2015 X-ray bar of "Methods over time" on the home page and check
  * that Browse opens filtered to exactly the two 2015 X-ray fixture entries.
  * @param page - Playwright page, already on the home page.
+ * @param carried - What the link carries besides the filters, which is the
+ *   share configuration of the page the chart was clicked on.
  */
-async function browseFromMethodsChart(page: Page) {
+async function browseFromMethodsChart(
+  page: Page,
+  carried: Record<string, string> = {},
+) {
   await page.getByTestId('bar.item.X-ray.0').click();
 
   const rows = page.locator('.pdb-table tbody tr');
@@ -44,6 +49,7 @@ async function browseFromMethodsChart(page: Page) {
     methods: 'X-RAY DIFFRACTION',
     yearMax: '2015',
     yearMin: '2015',
+    ...carried,
   });
 }
 
@@ -108,7 +114,10 @@ for (const query of ['?embed', '?embed=1']) {
     await expect(page.getByRole('banner')).toHaveCount(0);
     await expect(page.getByRole('contentinfo')).toHaveCount(0);
 
-    await browseFromMethodsChart(page);
+    // A chart clicked inside a framed page opens Browse framed as well: the
+    // host page must not get its chrome back on the first click.
+    await browseFromMethodsChart(page, { embed: '1' });
+    await expect(page.getByRole('banner')).toHaveCount(0);
   });
 }
 

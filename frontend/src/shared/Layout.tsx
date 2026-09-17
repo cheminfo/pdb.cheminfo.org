@@ -1,10 +1,12 @@
 import type { ReactNode } from 'react';
-import type { ShareVocabulary } from 'react-cheminfo/core';
-import { parseShareConfig } from 'react-cheminfo/core';
+import { useState } from 'react';
 import {
   CiteButton,
   EcosystemButton,
+  HiddenPartsProvider,
   NavLink as HeaderLink,
+  ShareButton,
+  ShareDialog,
   SiteFooter,
   SiteHeader,
   SiteMark,
@@ -13,6 +15,12 @@ import {
 import { NavLink, useLocation, useNavigate } from 'react-router';
 
 import { ABOUT } from '../about.ts';
+import {
+  DEFAULT_SHARE_PRESET,
+  SHARE_PRESETS,
+  SHARE_VOCABULARY,
+  readShareConfig,
+} from '../state/shareConfig.ts';
 
 import SeedingBanner from './SeedingBanner.tsx';
 
@@ -20,8 +28,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-/** No part of these pages can be hidden by a link; `?embed` drops the chrome. */
-const SHARE_VOCABULARY: ShareVocabulary = { parts: [] };
+const SITE_NAME = 'pdb.cheminfo.org';
 
 const PAGES = [
   { to: '/', label: 'Home' },
@@ -45,15 +52,19 @@ const PAGES = [
 export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
-  const { embed } = parseShareConfig(search, SHARE_VOCABULARY);
+  const share = readShareConfig(search);
+  const [isSharing, setIsSharing] = useState(false);
+  const pageLabel =
+    PAGES.find((page) => page.to === pathname)?.label ??
+    (pathname === '/about' ? 'About' : 'Home');
 
   return (
-    <>
+    <HiddenPartsProvider hidden={share.hidden}>
       <SiteTheme siteId="pdb" />
       <div className="app-shell">
         <SiteHeader
           siteId="pdb"
-          embedded={embed}
+          embedded={share.embed}
           width="full"
           nav={PAGES.map((page) => ({ id: page.to, label: page.label }))}
           onHome={() => void navigate('/')}
@@ -84,13 +95,29 @@ export default function Layout({ children }: LayoutProps) {
               />
               <CiteButton works={ABOUT.cite ?? []} />
               <EcosystemButton currentSiteId="pdb" />
+              <ShareButton
+                onClick={() => {
+                  setIsSharing(true);
+                }}
+              />
             </>
           }
         />
         <SeedingBanner />
         <main className="app-main">{children}</main>
       </div>
-      <SiteFooter siteId="pdb" embedded={embed} width="full" />
-    </>
+      <SiteFooter siteId="pdb" embedded={share.embed} width="full" />
+      <ShareDialog
+        isOpen={isSharing}
+        onClose={() => {
+          setIsSharing(false);
+        }}
+        vocabulary={SHARE_VOCABULARY}
+        presets={SHARE_PRESETS}
+        defaultPreset={DEFAULT_SHARE_PRESET}
+        title={`${pageLabel} — ${SITE_NAME}`}
+        frameTitle={`${pageLabel} — ${SITE_NAME}`}
+      />
+    </HiddenPartsProvider>
   );
 }

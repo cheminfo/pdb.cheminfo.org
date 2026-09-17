@@ -1,6 +1,6 @@
 import { Button, Card, Tab, Tabs, Tag } from '@blueprintjs/core';
 import { useCallback, useRef, useState } from 'react';
-import { useCopyToClipboard } from 'react-cheminfo/ui';
+import { PagePart, useCopyToClipboard } from 'react-cheminfo/ui';
 import { Link } from 'react-router';
 import { FullScreenProvider } from 'react-science/ui';
 
@@ -178,14 +178,16 @@ export default function SelectedEntry({ doc }: SelectedEntryProps) {
                   {copied ? 'copied!' : 'click to copy'}
                 </span>
               </Button>
-              <Link
-                to={`/scripting/${encodeURIComponent(doc._id)}`}
-                title={`Open ${doc._id} in the scripting page`}
-              >
-                <Button variant="minimal" icon="code" endIcon="arrow-right">
-                  Open in Scripting
-                </Button>
-              </Link>
+              <PagePart part="scripting">
+                <Link
+                  to={`/scripting/${encodeURIComponent(doc._id)}`}
+                  title={`Open ${doc._id} in the scripting page`}
+                >
+                  <Button variant="minimal" icon="code" endIcon="arrow-right">
+                    Open in Scripting
+                  </Button>
+                </Link>
+              </PagePart>
             </div>
             <div className="browse-entry-meta">
               <span>
@@ -209,46 +211,52 @@ export default function SelectedEntry({ doc }: SelectedEntryProps) {
           <div className="browse-entry-title">{doc.title}</div>
         </Card>
         <div className="browse-entry-grid">
-          <FullScreenProvider>
-            {(fullscreenRef) => (
-              <div
-                ref={fullscreenRef}
-                className="browse-viewer-fullscreen-wrap"
-              >
-                <BrowseViewerCard
-                  pdbText={pdbText}
-                  representation={representation}
-                  onRepresentationChange={setRepresentation}
-                  color={color}
-                  onColorChange={setColor}
-                  spin={spin}
-                  onSpinToggle={() => setSpin((value) => !value)}
-                  background={background}
-                  onBackgroundChange={setBackground}
-                  viewerHandleRef={viewerHandleRef}
-                />
-              </div>
-            )}
-          </FullScreenProvider>
-          <Card className="panel browse-pdb-text">
-            {pdbText.status === 'success' ? (
-              <PdbHeader pdb={pdbText.data} />
-            ) : (
-              <>
-                <h3>PDB header</h3>
-                <p className="placeholder">…</p>
-              </>
-            )}
-          </Card>
+          <PagePart part="viewer">
+            <FullScreenProvider>
+              {(fullscreenRef) => (
+                <div
+                  ref={fullscreenRef}
+                  className="browse-viewer-fullscreen-wrap"
+                >
+                  <BrowseViewerCard
+                    pdbText={pdbText}
+                    representation={representation}
+                    onRepresentationChange={setRepresentation}
+                    color={color}
+                    onColorChange={setColor}
+                    spin={spin}
+                    onSpinToggle={() => setSpin((value) => !value)}
+                    background={background}
+                    onBackgroundChange={setBackground}
+                    viewerHandleRef={viewerHandleRef}
+                  />
+                </div>
+              )}
+            </FullScreenProvider>
+          </PagePart>
+          <PagePart part="pdbHeader">
+            <Card className="panel browse-pdb-text">
+              {pdbText.status === 'success' ? (
+                <PdbHeader pdb={pdbText.data} />
+              ) : (
+                <>
+                  <h3>PDB header</h3>
+                  <p className="placeholder">…</p>
+                </>
+              )}
+            </Card>
+          </PagePart>
         </div>
       </div>
-      <Card className="panel browse-side">
-        <SideTabs
-          doc={doc}
-          selectedKey={focusKey ?? undefined}
-          onFocus={handleFocus}
-        />
-      </Card>
+      <PagePart part="annotations">
+        <Card className="panel browse-side">
+          <SideTabs
+            doc={doc}
+            selectedKey={focusKey ?? undefined}
+            onFocus={handleFocus}
+          />
+        </Card>
+      </PagePart>
     </>
   );
 }

@@ -659,14 +659,34 @@ code {
   min-height: 0;
 }
 
+/* A shared link may leave a column out (`?hide=filters`), and the part is then
+   dropped from the tree rather than hidden, so each track is a custom property
+   that blanks itself when its column is not there. Blanking one removes the
+   track, which keeps the remaining columns on the widths they were given. */
 .browse-grid {
+  --col-filters: minmax(200px, 0.7fr);
+  --col-list: minmax(280px, 1fr);
+  --col-side: minmax(320px, 1fr);
+
   flex: 1;
   display: grid;
   grid-template-columns:
-    minmax(200px, 0.7fr) minmax(280px, 1fr) minmax(0, 2fr)
-    minmax(320px, 1fr);
+    var(--col-filters) var(--col-list) minmax(0, 2fr)
+    var(--col-side);
   gap: 12px;
   min-height: 0;
+}
+
+.browse-grid:not(:has(> .filter-panel)) {
+  --col-filters: ;
+}
+
+.browse-grid:not(:has(> .browse-list-col)) {
+  --col-list: ;
+}
+
+.browse-grid:not(:has(> .browse-side)) {
+  --col-side: ;
 }
 
 .browse-list-col {
@@ -995,11 +1015,22 @@ code {
    The right side panel sits in its own column at the parent .browse-grid
    level. */
 .browse-entry-grid {
+  --row-viewer: minmax(0, 2.5fr);
+  --row-pdb-text: minmax(0, 1fr);
+
   flex: 1;
   display: grid;
-  grid-template-rows: minmax(0, 2.5fr) minmax(0, 1fr);
+  grid-template-rows: var(--row-viewer) var(--row-pdb-text);
   gap: 12px;
   min-height: 0;
+}
+
+.browse-entry-grid:not(:has(> .browse-viewer-fullscreen-wrap)) {
+  --row-viewer: ;
+}
+
+.browse-entry-grid:not(:has(> .browse-pdb-text)) {
+  --row-pdb-text: ;
 }
 
 .browse-viewer-fullscreen-wrap {
@@ -1124,9 +1155,9 @@ code {
 /* --- Tablet reflow: filters + list left, detail right, side wraps under */
 @media (max-width: 1280px) {
   .browse-grid {
-    grid-template-columns:
-      minmax(200px, 0.7fr) minmax(260px, 1fr)
-      minmax(0, 2fr);
+    --col-list: minmax(260px, 1fr);
+
+    grid-template-columns: var(--col-filters) var(--col-list) minmax(0, 2fr);
   }
   .filter-panel {
     grid-row: 1;
@@ -1136,14 +1167,15 @@ code {
     grid-column: 1 / -1;
     overflow: visible;
   }
+  /* The last track, whichever it is once a hidden column has dropped one. */
   .browse-main {
-    grid-column: 3;
+    grid-column: -2 / -1;
   }
 }
 
 @media (max-width: 1024px) {
   .browse-grid {
-    grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr);
+    grid-template-columns: var(--col-list) minmax(0, 2fr);
   }
   .filter-panel {
     grid-column: 1 / -1;
@@ -1152,7 +1184,7 @@ code {
     grid-column: 1;
   }
   .browse-main {
-    grid-column: 2;
+    grid-column: -2 / -1;
   }
   .browse-side {
     grid-column: 1 / -1;

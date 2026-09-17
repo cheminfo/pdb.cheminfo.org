@@ -116,6 +116,43 @@ backend. Common ones:
 | `/v1/ligands?substructure={idCode}`        | OpenChemLib substructure search over the CCD               |
 | `/v1/rsync-history?type=asymUnit&limit=10` | Recent rsync runs                                          |
 
+## Sharing and embedding
+
+Every page is a link, and every link can be framed in a course page or a slide.
+The **Share** button in the header builds both, and the addresses it writes are
+these:
+
+| Parameter                                                          | What it does                                                           |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| `?embed` (or `?embed=1`)                                           | Drops the header and the footer, so the tool sits inside your own page |
+| `?hide=a,b`                                                        | Switches parts off by name (below); an unknown name is ignored         |
+| `?q=`, `?smart=`, `?methods=`, `?yearMin=`, `?yearMax=`, `?order=` | The search the page opens on, as `/browse` writes it                   |
+
+The parts `?hide=` understands, on `/browse`:
+
+| Name          | What hiding it removes                 |
+| ------------- | -------------------------------------- |
+| `filters`     | The filter sidebar                     |
+| `list`        | The entry list                         |
+| `viewer`      | The 3D structure and its controls      |
+| `annotations` | The ligands, helices and sheets panel  |
+| `pdbHeader`   | The archive header under the structure |
+| `scripting`   | The _Open in Scripting_ link           |
+
+Hiding a part never disables what it carries: a link that hides the filters
+still runs the search it asks for, which is how a course pins a query a visitor
+cannot widen.
+
+```html
+<iframe
+  src="https://pdb.cheminfo.org/browse?q=lactamase&embed=1&hide=filters,list,scripting"
+  width="100%"
+  height="700"
+  style="border: 1px solid #ddd; border-radius: 8px"
+  title="pdb.cheminfo.org — one entry"
+></iframe>
+```
+
 ## Persistent data
 
 Everything writable lives under `./data/`:
