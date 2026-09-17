@@ -15,6 +15,11 @@ RUN npm ci --workspace=frontend --include-workspace-root \
 
 COPY frontend ./frontend
 
+# The About says which commit it was built from, and the build reads that off
+# the checkout rather than from a build argument. `.dockerignore` lets only
+# HEAD, refs and packed-refs through, so this is a few kilobytes.
+COPY .git ./.git
+
 # Vite is configured to emit at ../backend/public → /app/backend/public.
 # Bump the heap because tsc + molstar/monaco/blueprint comfortably exceed
 # the default ~1.7 GB during the type-check pass.
