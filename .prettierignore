@@ -2,5 +2,5 @@ CHANGELOG.md
 coverage/
 data/
 frontend/playwright-report/
-frontend/test-results/
+test-results/
 nginx/www/

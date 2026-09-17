@@ -14,5 +14,5 @@ coverage/
 backend/data/
 backend/public/
 frontend/playwright-report/
-frontend/test-results/
+test-results/
 node_modules/
