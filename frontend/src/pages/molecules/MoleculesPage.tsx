@@ -7,8 +7,8 @@ import {
 } from '@blueprintjs/core';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatInteger } from 'react-cheminfo/core';
-import type { OnChangeMoleculeCallback } from 'react-ocl';
-import { CanvasMoleculeEditor } from 'react-ocl';
+import type { StructureEditorChange } from 'react-cheminfo/structure';
+import { StructureEditor } from 'react-cheminfo/structure';
 
 import { fetchLigandPdbs, fetchLigandSearch } from '../../shared/api/client.ts';
 import type {
@@ -42,6 +42,7 @@ const FILTER_DEBOUNCE_MS = 300;
  */
 export default function MoleculesPage() {
   const [queryIdCode, setQueryIdCode] = useState<string | null>(null);
+  const [editorRevision, setEditorRevision] = useState(0);
   const [searchMode, setSearchMode] =
     useState<LigandSearchMode>('substructure');
   const [search, setSearch] = useState<LigandSearchResponse | null>(null);
@@ -136,19 +137,23 @@ export default function MoleculesPage() {
 
   // Each handler raises `searching` as it changes what to search for, so the
   // indicator appears the instant the user acts rather than a frame later.
-  const handleEditorChange = useCallback<OnChangeMoleculeCallback>((event) => {
+  const handleEditorChange = useCallback((change: StructureEditorChange) => {
+    if (change.mode !== 'molecule') return;
     // An empty canvas must NOT become a query: an empty fragment is contained in
     // every molecule, so it would run a substructure scan over the whole CCD.
     // The empty-molecule idCode varies (`d@` for a plain molecule, `dH` for a
     // fragment, more with coordinates), so gate on the atom count, not the code.
-    const hasAtoms = event.getMolecule().getAllAtoms() > 0;
-    setQueryIdCode(hasAtoms ? event.getIdcode() : null);
+    const hasAtoms = change.molecule.getAllAtoms() > 0;
+    setQueryIdCode(hasAtoms ? change.idCode : null);
     setOffset(0);
     setSearching(true);
   }, []);
 
+  // A new revision empties the canvas and drops an edit still waiting out the
+  // editor's debounce, which would otherwise bring the query back.
   const handleClear = useCallback(() => {
     setQueryIdCode(null);
+    setEditorRevision((revision) => revision + 1);
     setOffset(0);
     setSearching(true);
   }, []);
@@ -234,7 +239,10 @@ export default function MoleculesPage() {
             </ButtonGroup>
           </div>
           <div className="molecules-editor-canvas">
-            <CanvasMoleculeEditor onChange={handleEditorChange} />
+            <StructureEditor
+              revision={editorRevision}
+              onChange={handleEditorChange}
+            />
           </div>
           <div className="molecules-editor-actions">
             <span className="molecules-status">
