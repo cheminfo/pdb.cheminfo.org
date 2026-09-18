@@ -32,7 +32,7 @@
     "openchemlib-utils": "^8.17.1",
     "pino": "^10.3.1",
     "postgrator": "^8.0.0",
-    "react-cheminfo": "^0.15.0",
+    "react-cheminfo": "^0.18.0",
     "rsync": "^0.6.1",
     "smart-sqlite3-filter": "^1.0.0"
   },
