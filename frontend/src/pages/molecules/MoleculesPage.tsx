@@ -54,7 +54,9 @@ export default function MoleculesPage() {
     useState<LigandFilterDraft>(EMPTY_FILTER_DRAFT);
   const [sort, setSort] = useState<LigandSort | null>(null);
   const [offset, setOffset] = useState(0);
-  const [selectedCode, setSelectedCode] = useState<string | null>(null);
+  const [selectedLigand, setSelectedLigand] = useState<LigandSummary | null>(
+    null,
+  );
   const [pdbs, setPdbs] = useState<LigandPdbReference[] | null>(null);
   const [pdbsTotal, setPdbsTotal] = useState(0);
   const [pdbsError, setPdbsError] = useState<string | null>(null);
@@ -114,6 +116,7 @@ export default function MoleculesPage() {
   // about cascading renders.
 
   // Fetch PDBs for the active ligand selection.
+  const selectedCode = selectedLigand?.code ?? null;
   useEffect(() => {
     if (!selectedCode) return;
     let cancelled = false;
@@ -180,7 +183,7 @@ export default function MoleculesPage() {
   }, []);
 
   const handleSelectLigand = useCallback((ligand: LigandSummary | null) => {
-    setSelectedCode(ligand?.code ?? null);
+    setSelectedLigand(ligand);
     // Clear stale state up-front so the panel doesn't flash old PDBs.
     setPdbs(null);
     setPdbsTotal(0);
@@ -311,7 +314,7 @@ export default function MoleculesPage() {
           <h2>PDBs</h2>
           <div className="molecules-pdbs-panel-body">
             <LigandPdbsPanel
-              ligandCode={selectedCode}
+              ligand={selectedLigand}
               total={pdbsTotal}
               pdbs={pdbs}
               error={pdbsError}

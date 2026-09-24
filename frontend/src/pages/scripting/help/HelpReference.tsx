@@ -18,7 +18,7 @@ import { TOC_BY_TAB, referenceDomId } from './toc.ts';
  */
 export default function HelpReference() {
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <HelpToc entries={TOC_BY_TAB.reference} />
       <Callout icon="info-sign" className="help-next">
         Looking for something specific? The search box at the top searches this

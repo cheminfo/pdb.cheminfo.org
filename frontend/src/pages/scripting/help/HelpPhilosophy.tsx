@@ -39,7 +39,7 @@ const VOCABULARY: Array<[string, string, string]> = [
  */
 export default function HelpPhilosophy() {
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <HelpToc entries={TOC_BY_TAB.start} />
       <Callout intent="primary" icon="lightbulb" className="help-big-idea">
         <p>

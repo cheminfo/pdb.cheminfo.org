@@ -39,7 +39,9 @@ export default function PdbHeader({ pdb }: PdbHeaderProps) {
           ]}
         />
       </div>
-      <pre className="pdb-header">{view === 'full' ? pdb : headerOnly}</pre>
+      <pre className="pdb-header text-selectable">
+        {view === 'full' ? pdb : headerOnly}
+      </pre>
     </>
   );
 }

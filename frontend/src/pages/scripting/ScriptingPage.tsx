@@ -670,7 +670,9 @@ export default function ScriptingPage() {
       <div className="scripting-editor-frame">
         <Editor value={code} onChange={setCode} height="100%" />
       </div>
-      {scriptError && <pre className="scripting-error">{scriptError}</pre>}
+      {scriptError && (
+        <pre className="scripting-error text-selectable">{scriptError}</pre>
+      )}
     </Card>
   );
 

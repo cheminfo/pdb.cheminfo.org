@@ -29,7 +29,7 @@ export default function HelpSearchResults({
 }: HelpSearchResultsProps) {
   if (results.length === 0) {
     return (
-      <div className="help-tab">
+      <div className="help-tab text-selectable">
         <NonIdealState
           icon="search"
           title="Nothing found"
@@ -46,7 +46,7 @@ export default function HelpSearchResults({
   }
 
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <Callout icon="search" className="help-next">
         {results.length} {results.length === 1 ? 'match' : 'matches'} for{' '}
         <strong>{query}</strong>. Clear the box to get the tabs back.

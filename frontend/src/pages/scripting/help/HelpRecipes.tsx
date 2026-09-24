@@ -16,7 +16,7 @@ import { TOC_BY_TAB, recipeDomId } from './toc.ts';
  */
 export default function HelpRecipes() {
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <HelpToc entries={TOC_BY_TAB.recipes} />
       <Callout icon="clipboard" className="help-next">
         Each recipe is a whole script: copy it, press Run, then start changing

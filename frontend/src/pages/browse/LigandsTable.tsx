@@ -1,6 +1,7 @@
 import { HTMLTable } from '@blueprintjs/core';
 import { useEffect, useState } from 'react';
 import { Structure } from 'react-cheminfo/structure';
+import { ClickToCopy } from 'react-cheminfo/ui';
 import { MF } from 'react-mf';
 
 import type { FocusSpec } from '../../shared/PdbViewer.tsx';
@@ -79,7 +80,13 @@ export default function LigandsTable({
                   }
                 />
               </td>
-              <td className="ligand-structure-cell">
+              <ClickToCopy
+                as="td"
+                className="ligand-structure-cell"
+                value={structure?.smiles ?? ''}
+                label="SMILES"
+                disabled={!structure}
+              >
                 {structure ? (
                   <Structure
                     idCode={structure.idCode}
@@ -88,14 +95,37 @@ export default function LigandsTable({
                     autoCrop={false}
                   />
                 ) : null}
-              </td>
-              <td className="mono">{entry.label}</td>
-              <td className="mf-cell">
+              </ClickToCopy>
+              <ClickToCopy
+                as="td"
+                className="mono"
+                value={entry.label}
+                label="ligand code"
+              >
+                {entry.label}
+              </ClickToCopy>
+              <ClickToCopy
+                as="td"
+                className="mf-cell"
+                value={entry.mf}
+                label="molecular formula"
+              >
                 <MF mf={entry.mf} />
-              </td>
-              <td className="ligand-name" title={entry.name}>
+              </ClickToCopy>
+              <ClickToCopy
+                as="td"
+                className="ligand-name"
+                value={entry.name ?? ''}
+                label="ligand name"
+                title={
+                  entry.name
+                    ? `Copy the ligand name (${entry.name})`
+                    : undefined
+                }
+                disabled={!entry.name}
+              >
                 {entry.name ?? ''}
-              </td>
+              </ClickToCopy>
               <td className="num">{entry.number}</td>
             </tr>
           );
@@ -112,17 +142,23 @@ export default function LigandsTable({
   );
 }
 
+/** A resolved CCD structure, plus the SMILES its cell copies. */
+interface LigandStructure extends LigandSummary {
+  /** Isomeric SMILES of the canonical structure. */
+  smiles: string;
+}
+
 /**
  * Resolve each ligand code to a `{ idCode, coordinates }` pair via the
  * batched `/v1/ligands?codes=...` endpoint. Returns an empty map until the
  * fetch completes; failures degrade silently (the structure column stays
  * blank rather than blocking the page).
  * @param codes - Ligand 3-letter codes to resolve.
- * @returns Map of code → ligand summary (with idCode + coordinates).
+ * @returns Map of code → ligand summary (with idCode, coordinates and SMILES).
  */
-function useStructuresByCode(codes: string[]): Map<string, LigandSummary> {
+function useStructuresByCode(codes: string[]): Map<string, LigandStructure> {
   const cacheKey = codes.toSorted().join(',');
-  const [structures, setStructures] = useState<Map<string, LigandSummary>>(
+  const [structures, setStructures] = useState<Map<string, LigandStructure>>(
     () => new Map(),
   );
   useEffect(() => {
@@ -133,12 +169,9 @@ function useStructuresByCode(codes: string[]): Map<string, LigandSummary> {
         cancelled = true;
       };
     }
-    fetchLigandsByCodes(cacheKey.split(','))
-      .then((response) => {
-        if (cancelled) return;
-        const map = new Map<string, LigandSummary>();
-        for (const ligand of response.ligands) map.set(ligand.code, ligand);
-        setStructures(map);
+    loadStructures(cacheKey.split(','))
+      .then((map) => {
+        if (!cancelled) setStructures(map);
       })
       .catch(() => {
         // Silent: the ligand API is optional for the browse page.
@@ -148,4 +181,28 @@ function useStructuresByCode(codes: string[]): Map<string, LigandSummary> {
     };
   }, [cacheKey]);
   return structures;
+}
+
+/**
+ * Fetch the canonical structures and read the SMILES each one copies.
+ * `openchemlib` is imported dynamically so it stays out of the entry chunk,
+ * behind the same boundary `<Structure>` already loads it through.
+ * @param codes - Ligand 3-letter codes to resolve.
+ * @returns Map of code → ligand summary plus its isomeric SMILES.
+ */
+async function loadStructures(
+  codes: string[],
+): Promise<Map<string, LigandStructure>> {
+  const [response, { Molecule }] = await Promise.all([
+    fetchLigandsByCodes(codes),
+    import('openchemlib'),
+  ]);
+  const map = new Map<string, LigandStructure>();
+  for (const ligand of response.ligands) {
+    map.set(ligand.code, {
+      ...ligand,
+      smiles: Molecule.fromIDCode(ligand.idCode).toIsomericSmiles(),
+    });
+  }
+  return map;
 }

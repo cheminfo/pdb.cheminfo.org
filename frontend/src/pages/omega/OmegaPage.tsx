@@ -1,6 +1,7 @@
 import { Card } from '@blueprintjs/core';
 import { useMemo, useState } from 'react';
 import { formatDecimal, formatInteger } from 'react-cheminfo/core';
+import { ClickToCopy } from 'react-cheminfo/ui';
 
 import DualRangeSlider from '../../shared/DualRangeSlider.tsx';
 import {
@@ -145,14 +146,26 @@ function SummaryCards({ state }: SummaryCardsProps) {
       <Card className="stat-card" compact>
         <span className="label">Cis</span>
         <span className="value">{formatInteger(nbCis)}</span>
-        <span className="sub">{formatDecimal(cisPercent, 3)} % of bonds</span>
+        <ClickToCopy
+          as="div"
+          className="sub"
+          value={formatDecimal(cisPercent, 3)}
+          label="cis percentage"
+        >
+          {formatDecimal(cisPercent, 3)} % of bonds
+        </ClickToCopy>
       </Card>
       <Card className="stat-card" compact>
         <span className="label">Twisted</span>
         <span className="value">{formatInteger(nbTwisted)}</span>
-        <span className="sub">
+        <ClickToCopy
+          as="div"
+          className="sub"
+          value={formatDecimal(twistedPercent, 3)}
+          label="twisted percentage"
+        >
           {formatDecimal(twistedPercent, 3)} % (30° &lt; |ω| &lt; 150°)
-        </span>
+        </ClickToCopy>
       </Card>
     </div>
   );

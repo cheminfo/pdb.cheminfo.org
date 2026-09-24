@@ -1,4 +1,5 @@
 import { Callout, HTMLTable } from '@blueprintjs/core';
+import { ClickToCopy } from 'react-cheminfo/ui';
 
 import CodeBlock from './CodeBlock.tsx';
 import HelpToc from './HelpToc.tsx';
@@ -18,7 +19,7 @@ import { TOC_BY_TAB, selectionDomId } from './toc.ts';
  */
 export default function HelpSelections() {
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <HelpToc entries={TOC_BY_TAB.selections} />
       <Callout intent="primary" icon="search-around" className="help-big-idea">
         <p>
@@ -59,7 +60,13 @@ export default function HelpSelections() {
               {category.rows.map((row) => (
                 <tr key={row.expression}>
                   <td>
-                    <code>{row.expression}</code>
+                    <ClickToCopy
+                      as="code"
+                      value={row.expression}
+                      label="selection expression"
+                    >
+                      {row.expression}
+                    </ClickToCopy>
                   </td>
                   <td>{row.description}</td>
                 </tr>

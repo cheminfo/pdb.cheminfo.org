@@ -8,7 +8,7 @@ import EndpointList from './EndpointList.tsx';
  */
 export default function ApiPage() {
   return (
-    <div className="container">
+    <div className="container text-selectable">
       <header>
         <h1>HTTP API</h1>
         <p>

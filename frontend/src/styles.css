@@ -399,10 +399,12 @@ h2 {
   border-bottom: 0;
 }
 
+/* The gap leaves room for the clipboard glyph the inline copy target floats
+   past the PDB code, so it never covers the classification tag. */
 .pdb-summary-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 24px;
   flex-wrap: wrap;
   margin-bottom: 6px;
 }
@@ -962,39 +964,11 @@ code {
 .browse-entry-id {
   display: inline-flex;
   align-items: baseline;
-  gap: 10px;
   font-size: 22px;
   font-weight: 700;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   color: var(--accent);
-  background: transparent;
-  border: 0;
-  padding: 4px 8px;
-  margin: -4px -8px;
-  border-radius: 6px;
-  cursor: copy;
   letter-spacing: 0.02em;
-  transition: background-color 120ms;
-}
-
-.browse-entry-id:hover {
-  background: var(--accent-soft);
-}
-
-.browse-entry-id-hint {
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--muted);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  opacity: 0;
-  transition: opacity 120ms;
-}
-
-.browse-entry-id:hover .browse-entry-id-hint {
-  opacity: 1;
 }
 
 .browse-entry-title {
@@ -1391,6 +1365,12 @@ code {
   padding: 2px 6px;
   border-bottom: 1px solid var(--border);
   line-height: 1.3;
+}
+
+/* A copyable cell keeps its right edge for the clipboard glyph, which the
+   table's own padding would otherwise give back to the value. */
+.info-table tbody td.click-to-copy {
+  padding-right: 22px;
 }
 
 .info-table .num {
@@ -1871,7 +1851,34 @@ code {
   padding: 4px;
 }
 
+/* The column gap leaves room for the clipboard glyph each value floats past
+   its right edge. */
+.ligand-pdbs-caption {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.ligand-pdbs-code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--accent);
+}
+
+.ligand-pdbs-name {
+  flex-basis: 100%;
+  color: var(--muted);
+}
+
 .ligand-pdbs-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   font-size: 13px;
   margin: 0 0 8px;
 }
@@ -2330,9 +2337,11 @@ code {
 /* Annotated code — the anatomy of a statement. Never wraps: the ruler
    underneath only lines up with the code above it at a fixed width. */
 
+/* The same dark surface the family CodeBlock paints, so the two code blocks
+   of one panel read as one. */
 .help-anatomy {
-  background: #0f172a;
-  color: #f1f5f9;
+  background: #1e293b;
+  color: #e2e8f0;
   padding: 12px;
   border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -2356,20 +2365,13 @@ code {
 }
 
 .help-code pre {
-  background: #0f172a;
-  color: #f1f5f9;
-  padding: 10px 12px;
-  border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 12px;
   line-height: 1.5;
-  white-space: pre-wrap;
-  margin: 0;
   overflow-x: auto;
 }
 
-/* Token palette for the code samples. Tuned for contrast on the #0f172a
-   background — comments stay recessive but readable, never below 4.5:1. */
+/* Token palette for the code samples. Tuned for contrast on the dark code
+   block — comments stay recessive but readable, never below 4.5:1. */
 
 .help-code .tok-plain {
   color: #e2e8f0;
@@ -2396,18 +2398,22 @@ code {
   color: #7dd3fc;
 }
 
-.help-code-copy {
-  position: absolute;
-  top: 4px;
-  right: 4px;
+/* The copy button the family code block puts in the corner: it only shows
+   itself on hover, and reads light on the dark block. The tick and the cross
+   keep the intent colours Blueprint gives them. */
+.help-code > span {
   opacity: 0;
   transition: opacity 0.12s ease-in-out;
-  color: #cbd5e1 !important;
 }
 
-.help-code:hover .help-code-copy,
-.help-code-copy:focus-visible {
+.help-code:hover > span,
+.help-code > span:focus-within {
   opacity: 1;
+}
+
+.help-code > span .bp6-button:not([class*='bp6-intent-']),
+.help-code > span .bp6-button:not([class*='bp6-intent-']) .bp6-icon {
+  color: #cbd5e1;
 }
 
 /* Collapsible concept cards. */

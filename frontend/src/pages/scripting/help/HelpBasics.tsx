@@ -34,7 +34,7 @@ export default function HelpBasics() {
   const allOpen = openIds.size === CONCEPTS.length;
 
   return (
-    <div className="help-tab">
+    <div className="help-tab text-selectable">
       <HelpToc entries={TOC_BY_TAB.basics} />
       <Callout icon="learning" className="help-next">
         You do not need to learn programming to use this page — you need about

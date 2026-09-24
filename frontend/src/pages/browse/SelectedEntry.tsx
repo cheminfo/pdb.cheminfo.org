@@ -1,6 +1,6 @@
 import { Button, Card, Tab, Tabs, Tag } from '@blueprintjs/core';
 import { useCallback, useRef, useState } from 'react';
-import { PagePart, useCopyToClipboard } from 'react-cheminfo/ui';
+import { ClickToCopy, PagePart } from 'react-cheminfo/ui';
 import { Link } from 'react-router';
 import { FullScreenProvider } from 'react-science/ui';
 
@@ -113,9 +113,6 @@ function SideTabs({ doc, selectedKey, onFocus }: SideTabsProps) {
   );
 }
 
-/** How long the PDB-code button says it copied, in milliseconds. */
-const COPY_RESET_MS = 1200;
-
 /**
  * Centre column (entry header + viewer + PDB header) and right column
  * (side tables) of the currently-selected entry, rendered as siblings of
@@ -127,7 +124,6 @@ const COPY_RESET_MS = 1200;
 export default function SelectedEntry({ doc }: SelectedEntryProps) {
   const fetchTextForId = useCallback(() => fetchPdbText(doc._id), [doc._id]);
   const pdbText = useAsync(fetchTextForId);
-  const { copied, copy } = useCopyToClipboard(COPY_RESET_MS);
   const [representation, setRepresentation] = useState<RepresentationName>(
     DEFAULT_REPRESENTATION,
   );
@@ -156,28 +152,20 @@ export default function SelectedEntry({ doc }: SelectedEntryProps) {
     [],
   );
 
-  function copyId() {
-    void copy(doc._id);
-  }
-
   return (
     <>
       <div className="browse-main">
         <Card className="panel browse-entry-header">
           <div className="browse-entry-top">
             <div className="browse-entry-id-row">
-              <Button
+              <ClickToCopy
+                as="div"
                 className="browse-entry-id"
-                variant="minimal"
-                icon={copied ? 'tick' : 'duplicate'}
-                onClick={copyId}
-                title="Click to copy PDB code"
+                value={doc._id}
+                label="PDB code"
               >
-                <span className="browse-entry-id-code">{doc._id}</span>
-                <span className="browse-entry-id-hint">
-                  {copied ? 'copied!' : 'click to copy'}
-                </span>
-              </Button>
+                {doc._id}
+              </ClickToCopy>
               <PagePart part="scripting">
                 <Link
                   to={`/scripting/${encodeURIComponent(doc._id)}`}
@@ -208,7 +196,15 @@ export default function SelectedEntry({ doc }: SelectedEntryProps) {
               )}
             </div>
           </div>
-          <div className="browse-entry-title">{doc.title}</div>
+          <ClickToCopy
+            as="div"
+            className="browse-entry-title"
+            value={doc.title}
+            label="title"
+            disabled={!doc.title}
+          >
+            {doc.title}
+          </ClickToCopy>
         </Card>
         <div className="browse-entry-grid">
           <PagePart part="viewer">

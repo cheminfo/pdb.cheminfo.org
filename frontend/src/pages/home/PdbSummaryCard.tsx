@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { formatInteger } from 'react-cheminfo/core';
+import { ClickToCopy } from 'react-cheminfo/ui';
 
 import type { PdbDoc } from '../../shared/api/types.ts';
 
@@ -31,12 +32,26 @@ export default function PdbSummaryCard({ doc, header }: PdbSummaryCardProps) {
   return (
     <div className="pdb-summary">
       <div className="pdb-summary-header">
-        <span className="pdb-summary-id">{doc._id}</span>
+        <ClickToCopy
+          className="pdb-summary-id"
+          value={doc._id}
+          label="PDB code"
+        >
+          {doc._id}
+        </ClickToCopy>
         {header.classification && (
           <span className="pdb-summary-tag">{header.classification}</span>
         )}
       </div>
-      <h3 className="pdb-summary-title">{doc.title || 'Untitled'}</h3>
+      <h3 className="pdb-summary-title">
+        {doc.title ? (
+          <ClickToCopy value={doc.title} label="title">
+            {doc.title}
+          </ClickToCopy>
+        ) : (
+          'Untitled'
+        )}
+      </h3>
 
       <dl className="pdb-summary-list">
         {uniqueMolecules.length > 0 && (
@@ -62,8 +77,14 @@ export default function PdbSummaryCard({ doc, header }: PdbSummaryCardProps) {
             <ul className="pdb-summary-ligands">
               {ligands.slice(0, 8).map((ligand) => (
                 <li key={ligand.label}>
-                  <code>{ligand.label}</code>
-                  {ligand.name ? ` — ${ligand.name.toLowerCase()}` : ''}
+                  <ClickToCopy
+                    as="div"
+                    value={ligand.label}
+                    label="ligand code"
+                  >
+                    <code>{ligand.label}</code>
+                    {ligand.name ? ` — ${ligand.name.toLowerCase()}` : ''}
+                  </ClickToCopy>
                 </li>
               ))}
               {ligands.length > 8 && (
