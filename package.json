@@ -1,6 +1,6 @@
 {
   "name": "pdb-quickview",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Searchable mirror of the wwPDB with precomputed PyMol thumbnails, served from SQLite behind nginx.",
   "type": "module",
   "private": true,
