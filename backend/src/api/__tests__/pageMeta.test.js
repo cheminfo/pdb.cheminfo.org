@@ -65,6 +65,29 @@ test('the served page carries that page, not the build', () => {
   expect(html.indexOf('rel="canonical"')).toBeLessThan(html.indexOf('</head>'));
 });
 
+/**
+ * The words a crawler reads in the page, with the markup taken out.
+ * @param {string} html - The page as it was served.
+ * @returns {string} Its crawl-path text.
+ */
+function bodyText(html) {
+  return (/<noscript>([\s\S]*?)<\/noscript>/.exec(html)?.[1] ?? '')
+    .replaceAll(/<[^>]+>/g, ' ')
+    .replaceAll(/\s+/g, ' ')
+    .trim();
+}
+
+test('each address carries its own text above the index', () => {
+  const origin = 'https://pdb.cheminfo.org';
+  const browse = injectPageMeta(PAGE, { url: '/browse', origin });
+  const about = injectPageMeta(PAGE, { url: '/about', origin });
+
+  // Both carry the menu; what must differ is the text above it, or a search
+  // engine is handed one page under every address of the site.
+  expect(bodyText(browse)).not.toBe(bodyText(about));
+  expect(bodyText(about)).toContain('About, and what to cite');
+});
+
 test('the page a crawler reads carries what the site is, and where it goes', () => {
   const html = injectPageMeta(PAGE, {
     url: '/browse',
@@ -73,9 +96,9 @@ test('the page a crawler reads carries what the site is, and where it goes', () 
 
   expect(html).toContain('"applicationCategory": "ScienceApplication"');
   expect(html).toContain('"name": "pdb.cheminfo.org"');
-  expect(html).toContain(
-    '<h1>pdb.cheminfo.org — a fast look at any Protein Data Bank entry</h1>',
-  );
+  // The page's own name heads the block, not the site's: a search engine reads
+  // one `h1` per address, and it must be the address it is on.
+  expect(html).toContain('<h1>Browse the Protein Data Bank</h1>');
   expect(html).toContain(
     '<li><a href="/browse">Browse</a> — search and filter every entry</li>',
   );

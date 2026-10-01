@@ -73,10 +73,20 @@ export function injectPageMeta(html, options) {
   const head = `${pageHeadTags({ site: SITE_ID, routes, url, origin })}
 ${structuredDataScript({ site: SITE_ID, routes, origin, ...APPLICATION })}`;
 
+  // The crawl path carries the text of the address being served, above the menu
+  // every address carries. Without it each entry shipped the same body — this
+  // menu, byte for byte — and a search engine handed one text for every
+  // identifier in the archive clusters them into a single result.
+  const meta = siteMetaFor(routes, url);
   return fill(
     fill(html, PAGE_HEAD_MARKER, head),
     PAGE_BODY_MARKER,
-    noscriptIndex({ site: SITE_ID, origin, ...NOSCRIPT }),
+    noscriptIndex({
+      site: SITE_ID,
+      origin,
+      ...NOSCRIPT,
+      content: { heading: meta.title, paragraphs: [meta.description] },
+    }),
   );
 }
 
