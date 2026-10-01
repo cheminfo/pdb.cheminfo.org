@@ -1,12 +1,6 @@
-import {
-  Button,
-  Card,
-  Checkbox,
-  HTMLSelect,
-  NumericInput,
-  Tag,
-} from '@blueprintjs/core';
+import { Button, Card, Checkbox, HTMLSelect, Tag } from '@blueprintjs/core';
 import { useMemo } from 'react';
+import { NumberInput } from 'react-cheminfo/ui';
 
 import DualRangeSlider from '../../shared/DualRangeSlider.tsx';
 import SmartFilterBuilder from '../../shared/SmartFilterBuilder/index.ts';
@@ -362,24 +356,24 @@ function RangeRow({ label, range, bounds, onChange }: RangeRowProps) {
         />
       )}
       <div className="filter-range">
-        <NumericInput
-          buttonPosition="none"
+        <NumberInput
+          allowEmpty
+          buttons={false}
           fill
           placeholder={String(bounds.min)}
-          value={range.min ?? ''}
-          onValueChange={(_value, asString) =>
-            onChange({ ...range, min: parseValue(asString) })
-          }
+          value={range.min ?? undefined}
+          ariaLabel={`${label}, from`}
+          onChange={(next) => onChange({ ...range, min: next ?? null })}
         />
         <span className="filter-range-sep">–</span>
-        <NumericInput
-          buttonPosition="none"
+        <NumberInput
+          allowEmpty
+          buttons={false}
           fill
           placeholder={String(bounds.max)}
-          value={range.max ?? ''}
-          onValueChange={(_value, asString) =>
-            onChange({ ...range, max: parseValue(asString) })
-          }
+          value={range.max ?? undefined}
+          ariaLabel={`${label}, to`}
+          onChange={(next) => onChange({ ...range, max: next ?? null })}
         />
       </div>
     </div>
@@ -393,11 +387,6 @@ function formatRange(
   const lo = range.min ?? bounds.min;
   const hi = range.max ?? bounds.max;
   return `${lo} – ${hi}`;
-}
-
-function parseValue(raw: string): number | null {
-  const value = Number(raw);
-  return raw.trim() === '' || !Number.isFinite(value) ? null : value;
 }
 
 function hasRange(range: RangeFilter): boolean {

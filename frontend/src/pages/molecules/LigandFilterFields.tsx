@@ -1,4 +1,5 @@
 import { Button, FormGroup, InputGroup } from '@blueprintjs/core';
+import { NumberInput } from 'react-cheminfo/ui';
 
 import type { LigandFilterDraft } from './ligandFilters.ts';
 import { hasLigandFilters } from './ligandFilters.ts';
@@ -64,19 +65,35 @@ export default function LigandFilterFields({
       ))}
       <FormGroup label="MW" inline>
         <div className="molecules-filters-range">
-          <InputGroup
+          <NumberInput
+            allowEmpty
+            buttons={false}
             size="small"
-            type="number"
-            value={draft.mwMin}
+            min={0}
+            value={draft.mwMin === '' ? undefined : Number(draft.mwMin)}
             placeholder="min"
-            onValueChange={(value) => onChange({ ...draft, mwMin: value })}
+            ariaLabel="Smallest molecular weight"
+            onChange={(next) =>
+              onChange({
+                ...draft,
+                mwMin: next === undefined ? '' : String(next),
+              })
+            }
           />
-          <InputGroup
+          <NumberInput
+            allowEmpty
+            buttons={false}
             size="small"
-            type="number"
-            value={draft.mwMax}
+            min={0}
+            value={draft.mwMax === '' ? undefined : Number(draft.mwMax)}
             placeholder="max"
-            onValueChange={(value) => onChange({ ...draft, mwMax: value })}
+            ariaLabel="Largest molecular weight"
+            onChange={(next) =>
+              onChange({
+                ...draft,
+                mwMax: next === undefined ? '' : String(next),
+              })
+            }
           />
         </div>
       </FormGroup>

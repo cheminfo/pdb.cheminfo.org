@@ -1,10 +1,5 @@
-import {
-  Button,
-  Checkbox,
-  InputGroup,
-  NumericInput,
-  TagInput,
-} from '@blueprintjs/core';
+import { Button, Checkbox, InputGroup, TagInput } from '@blueprintjs/core';
+import { NumberInput } from 'react-cheminfo/ui';
 
 import type { FilterField, FilterFieldType, OperatorId } from './types.ts';
 
@@ -33,9 +28,9 @@ interface ValueEditorProps {
  * Renders the value section of the clause editor. The exact widget is
  * picked from {fieldType, operator}:
  *
- * - `between`              → two `NumericInput`s with a `…` separator.
+ * - `between`              → two `NumberInput`s with a `…` separator.
  * - `enum`                 → multi-checkbox list of the field's `options`.
- * - `number` (≤ 1 value)   → plain `NumericInput` + `+` to grow to OR-list.
+ * - `number` (≤ 1 value)   → plain `NumberInput` + `+` to grow to OR-list.
  * - `string` (≤ 1 value)   → plain `InputGroup` + `+` to grow to OR-list.
  * - multi-value (length>1) → BlueprintJS `TagInput`; pending text is
  *                            tracked via `pendingInput` so a click on
@@ -63,24 +58,28 @@ export default function ValueEditor({
     const [low = '', high = ''] = values;
     return (
       <div className="smart-filter-editor-range">
-        <NumericInput
-          buttonPosition="none"
+        <NumberInput
+          allowEmpty
+          buttons={false}
           fill
           placeholder={
             fieldDef?.min !== undefined ? String(fieldDef.min) : 'low'
           }
-          value={low}
-          onValueChange={(_value, asString) => onChange([asString, high])}
+          value={numberOf(low)}
+          ariaLabel="From"
+          onChange={(next) => onChange([textOf(next), high])}
         />
         <span className="smart-filter-editor-range-sep">…</span>
-        <NumericInput
-          buttonPosition="none"
+        <NumberInput
+          allowEmpty
+          buttons={false}
           fill
           placeholder={
             fieldDef?.max !== undefined ? String(fieldDef.max) : 'high'
           }
-          value={high}
-          onValueChange={(_value, asString) => onChange([low, asString])}
+          value={numberOf(high)}
+          ariaLabel="To"
+          onChange={(next) => onChange([low, textOf(next)])}
         />
       </div>
     );
@@ -114,12 +113,14 @@ export default function ValueEditor({
     return (
       <div className="smart-filter-editor-single">
         {fieldType === 'number' ? (
-          <NumericInput
-            buttonPosition="none"
+          <NumberInput
+            allowEmpty
+            buttons={false}
             fill
             placeholder="value"
-            value={current}
-            onValueChange={(_value, asString) => onChange([asString])}
+            value={numberOf(current)}
+            ariaLabel="Value"
+            onChange={(next) => onChange([textOf(next)])}
           />
         ) : (
           <InputGroup
@@ -152,4 +153,24 @@ export default function ValueEditor({
       }}
     />
   );
+}
+
+/**
+ * The number a stored value reads as.
+ * @param text - The value as the clause stores it.
+ * @returns The number, or nothing when the box is empty.
+ */
+function numberOf(text: string): number | undefined {
+  if (text.trim() === '') return undefined;
+  const value = Number(text);
+  return Number.isFinite(value) ? value : undefined;
+}
+
+/**
+ * The text a clause stores a number as.
+ * @param value - The number, or nothing when the box is empty.
+ * @returns Its text.
+ */
+function textOf(value: number | undefined): string {
+  return value === undefined ? '' : String(value);
 }
